@@ -1,0 +1,262 @@
+11_3 시스템프로그래밍기초 2024052015 김동건
+
+#include <stdio.h>
+#define _CRT_SECURE_NO_WARNINGS
+
+
+//int global; // 전역변수 , 기본적으로 0으로 초기화시켜줌
+//
+//int main()
+//{
+//	int sum = 10; //지역변수, 자돋변수 StackFrame 안에 생성
+//	int global = 200;
+//	printf("%d \n", sum);
+//	printf("%d \n", global); // main이 자기 안에서 뒤지고 없으면 밖에서 뒤짐
+//
+//
+//	return 1;
+//}
+
+// ======== 8.4 ===========
+
+//int sum;
+//
+//int sum_up(int n)
+//{
+//	sum += n;
+//	printf("in sum_up %d \n", sum);
+//}
+//
+//int main() {
+//
+//	int i, num;
+//	sum = 0;
+//	for( i = 1; i<4 ; i++)
+//		sum_up(i);
+//
+//	printf("in main: %d \n", sum);
+//	return 1;
+//
+//}
+
+// ==========
+
+
+//void call_count() {
+//
+//	static int number = 0;
+//	number += 1;
+//
+//	printf("number is %d \n", number);
+//
+//}
+//int main() {
+//
+//	for (int i = 0; i < 3; i++)
+//		call_count();
+//
+//	return 1;
+//}
+
+// ===========EX8.6=========
+
+//void sum_up(int n) {
+//
+//	static int sum = 0;
+//	sum += n;
+//	printf("in sum_up %d \n", sum);
+//}
+//
+//
+//int main() {
+//
+//
+//	for (int i = 1; i < 4; i++)
+//		sum_up(i);
+//
+//	//printf("in main %d \n", sum);
+//
+//	return 1;
+//}
+
+// ========EX 8-10 ========
+
+//void swap(int m, int n)
+//{
+//
+//	int temp;
+//	printf("%d %d \n", m ,n);
+//	temp = m;
+//	m = n;
+//	n = temp;
+//	printf("&d %d", m, n);
+//
+//}
+//
+//int main()
+//{
+//
+//	int a = 10, b = 5;
+//	printf("&d %d", a, b);
+//	swap(a, b);
+//	printf("&d %d", a, b);
+//
+//
+//	return 1;
+//}
+
+
+// ==================
+//#define add(a,b) ((a)+(b)) // mecro function
+//int main()
+//{
+//
+//	int sum = add(10, 20);
+//	printf("%d \n", sum);
+//
+//	return 1;
+//}
+
+//======EX 8- 11 ======
+
+//inline int add(int a, int b)
+//{
+//
+//	return  (a + b);
+//}
+//
+//int main()
+//{
+//
+//	int sum = add(10, 20);
+//
+//	return 1;
+//}
+
+
+
+//=========Ex 8 - 13============
+
+//#include <stdarg.h>
+//
+//int find_min(int count, ...) 
+//{
+//
+//	int min, temp, i;
+//
+//	va_list(p); // 리스트 생성
+//	va_start(p, count); // 가변인자의 값을 리스트에 복사
+//	min = va_arg(p, int); // 리스트에서 값을 읽어오는 것
+//
+//	for (i = 2; i <= count; i++)
+//	{
+//		temp = va_arg(p, int);
+//		if (temp < min)
+//			min = temp;
+//	}
+//	va_end(p);// 리스트를 삭제
+//
+//	return min;
+//}
+//
+//int main()
+//
+//{
+//	int min = find_min(3, 10, 9, 1);
+//	printf(" min is %d", min);
+//
+//
+//	return 1;
+//}
+
+//=======EX 8- 14========
+
+//int facto(int n)
+//{
+//
+//	if (n == 1)
+//		return 1;
+//
+//	else
+//		return n * facto(n - 1);
+//}
+//
+//
+//int main()
+//{
+//	int factorial = facto(3);
+//	printf("3 factorial = %d \n", factorial);
+//
+//	return 1;
+//
+//}
+
+
+// =======EX 8- 19===========
+
+//void to_binary(int n)
+//{
+//	if (n == 0)
+//		return;
+//	else
+//	{
+//		to_binary(n / 2);
+//		printf("%d", (n % 2));
+//	}
+//
+//}
+//
+//int main()
+//{
+//	to_binary(5);
+//
+//	return 1;
+//}
+
+
+// ==============Ex ============
+
+//int main()
+//{
+//
+//	int arr[4] = { 10,20,30,40 };
+//
+//	printf("%p \n", arr);
+//	printf("%p \n", arr + 1);
+//
+//	return 1;
+//}
+
+//int main()
+//{
+//	int array[4] = { 10,20,30,40 };
+//
+//	for (int i = 0; i < 4; i++)
+//		printf("%d ", array[i]);
+//	printf("\n");
+//
+//	for (int i = 0; i < 4; i++)
+//		printf("%d ", *(array + i));
+//
+//	array[2] = array[1] + array[3]; // 오른쪽 R-value 값 
+//
+//	printf("\n");
+//	for (int i = 0; i < 4; i++)
+//		printf("%d ", *(array + i));
+//
+//	printf("\n");
+//	printf("%d \n", *array); // *array == *(array) == *(array +0) == array[0]
+//
+//	return 1;
+//
+//}
+
+
+//int main()
+//{
+//
+//	printf("%p \n", "Hello");
+//	printf(4000, 3000);
+//
+//	return 1;
+//} 

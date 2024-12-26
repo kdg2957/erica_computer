@@ -1,0 +1,315 @@
+// ConsoleApplication13.cpp : 이 파일에는 'main' 함수가 포함됩니다. 거기서 프로그램 실행이 시작되고 종료됩니다.
+//
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+#include <string.h>
+
+
+// 파일입출력
+//#include <ctype.h>
+//int main() {
+//	int ch;
+//	unsigned int num = 0;
+//	FILE* fp = fopen("C:\\Temp\\from.txt", "rt");
+//	ch = fgetc(fp);
+//	while (isdigit(ch))
+//	{
+//		num = num * 10 + ch - '0';
+//		ch = fgetc(fp);
+//	}
+//	printf("%d", num);
+//	fclose(fp);
+//
+//}
+
+
+//=======================12-5======================
+#define MAX 10
+#define FRIENDS 3
+
+//int main()
+//{
+//	char name[MAX];
+//	char list[FRIENDS][MAX];
+//
+//	for (int i = 0; i < FRIENDS; i++) {
+//
+//		printf("Enter your friend's name \n");
+//		gets(name);
+//		strcpy(list[i], name);
+//	}
+//
+//	for (int i = 0; i < FRIENDS; i++)
+//	{
+//		printf(list[i]);
+//	}
+//
+//
+//}
+
+//int main() {
+//	char conti[3][5] = { "kim","Lee","Park" };
+//	char temp[5];
+//
+//	char* ragged[3] = { "kim","Lee","Park" };
+//	char* ptr;
+//
+//
+//	strcpy(temp, conti[0]);
+//	strcpy(conti[0], conti[2]);
+//	strcpy(conti[2], temp);
+//
+//	for(int i = 0 ; i< 3; i++)
+//		puts(conti[i] );
+//
+//
+//	ptr = ragged[0];
+//	ragged[0] = ragged[2];
+//	ragged[2] = ptr;
+//
+//	for (int i = 0; i < 3; i++)
+//		puts(ragged[i]);
+//	
+//	return 1;
+//}
+
+#include <string.h> //stirng 배열
+#include <stdlib.h> //malloc 동적할당
+//#define MAX 10 // 메크로 상수
+//int main() {
+//
+//	char* wish_list[MAX]; // 포인터 배열
+//	char* temp[100]; // 캐릭터형 배열
+//
+//	int i = 0, j;
+//
+//	while (1)
+//	{
+//		printf("Enter your wishes. \n");
+//		gets(temp);
+//
+//		if(strcmp(temp, "quit") == 0) // 0이면 두개가 같음 / 반복 종료 조건 
+//			break;
+//		wish_list[i] = (char*)malloc(sizeof(char) * ( strlen(temp) +1 ));
+//
+//		if (wish_list[i] == NULL)
+//			return 0;
+//		
+//		strcpy(wish_list[i], temp);
+//		i++;
+//	}
+//
+//	for (j = 0; j < i; j++)
+//		puts(wish_list[j]);
+//
+//	for (j = 0; j < i; j++)
+//	{
+//		free(wish_list[j]);
+//		wish_list[j] = NULL;
+//	}
+//
+//	return 1;
+//}
+
+
+//#include <string.h>
+//#include "car.h"
+////===========13- 1============
+//
+//
+//
+//int main() {
+//	
+//	struct car mycar = { "pony",1975, 300000 };
+//
+//	printf("%s \n", mycar.name);
+//	printf("%d \n", mycar.year);
+//	printf("%d \n", mycar.mileage);
+//
+//	struct car hiscar;
+//	
+//	strcpy( hiscar.name, "sonata");
+//	hiscar.year = 2000;
+//	hiscar.mileage = 200000;
+//
+//	printf("%s \n", hiscar.name);
+//	printf("%d \n", hiscar.year);
+//	printf("%d \n", hiscar.mileage);
+//
+//	return 1;
+//}
+
+//==============
+
+
+//typedef struct 
+//{
+//	char name[9];
+//	int year;
+//	int mileage;
+//} car ;
+//
+//int main()
+//{
+//
+//	//struct car mycar;   //struct 키워드 써서 선언
+//	
+//	car hiscar = { "sonata", 1940, 340 };  // 타임def 써서 만들기 
+//
+//	printf("%d \n", hiscar.year);
+//
+//	return 1;
+//}
+
+
+
+//struct point
+//{
+//
+//	int x;
+//	int y;
+//
+//};
+//int main()
+//{
+//	struct point p = { 3, 4 };
+//
+//	struct point* ptr = &p;
+//
+//	printf("%d %d \n", (*ptr).x, (*ptr).y);
+//	(*ptr).x = 30;
+//	(*ptr).y = 40;
+//	printf("%d %d \n", (*ptr).x, (*ptr).y);
+//	printf("%d %d \n", ptr->x, ptr->y);
+//
+//
+//	return 1;
+//}
+
+// ===========13 - 2=============
+
+//struct point
+//{
+//	int x;
+//	int y;
+//};
+//
+//struct rectangle
+//{
+//
+//	struct point tl;
+//	struct point br;
+//	
+//};
+//
+//int main()
+//{
+//	
+//	struct rectangle * p;
+//	int x_diff, y_diff;
+//
+//	p = (struct point*)malloc(sizeof(struct rectangle));
+//
+//	if (p == NULL)
+//		return 0;
+//
+//	(p->tl).x = 2;
+//	(p->tl).y = 10;
+//	(p->br).x = 5;
+//	(p->br).y = 3;
+//
+//	x_diff = abs((p->tl).x - (p->br).x);
+//	y_diff = abs((p->tl).y - (p->br).y);
+//	
+//	printf("%d, %d \n", x_diff, y_diff);
+//	
+//	
+//	return 1;
+//}
+
+
+// =========  13 - 3============
+
+#include <stdlib.h>
+
+//struct employee
+//{
+//
+//	char* name;
+//	int resident_no;
+//
+//};
+//
+//
+//int main()
+//{
+//
+//	struct employee seller, * p;
+//
+//	p = &seller;
+//	p->name = "Jay Kim";
+//
+//	puts(p->name);
+//
+//	p->name = (char *)malloc(sizeof(char) * 40);
+//	if (p->name == NULL)
+//		return 0;
+//
+//	strcpy(p->name, "John Lee");
+//	puts(p->name);
+//	free(p->name);
+//
+//	return 1;
+//}
+
+// ============================
+
+//struct point {
+//	int x;
+//	int y;
+//
+//};
+//
+//struct point increment(struct point s)
+//{
+//
+//	s.x += 1;
+//	s.y += 1;
+//	return s;
+//}
+//
+//int main()
+//{
+//	struct point a = { 1,2 }, b, c;
+//
+//	b = a;
+//	printf("%d %d ", b.x, b.y);
+//	
+//	c = increment(a);
+//	printf("%d %d ", c.x, c.y);
+//
+//}
+
+// =================ex  14- 10===============
+
+struct employee
+{
+
+	int entry;
+	char name[20];
+	char phone[20];
+};
+
+int main()
+{
+	struct employee arr[3] = { 
+		{ 1, "Kim", "010-1234-4567"},
+		{ 2, "Lee", "010-4784-4578"},
+		{ 3, "Park", "010-7899-444"}
+	};
+
+	for (int i = 0; i < 3; i++) {
+		printf("%s \n", arr[i].phone);
+	}
+}
+

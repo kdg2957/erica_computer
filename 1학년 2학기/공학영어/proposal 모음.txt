@@ -1,0 +1,128 @@
+proposal 모음
+
+1팀 : Automated Detection of Deepfakes Using Machine Learning
+
+발표자:  2024017583 하리스 주바이르
+
+deepfakes / Machine learning / 딥페이크 문제점( 감지하기 어렵다 / 가짜뉴스 )
+
+objective => Find and apply Deepfake Detection Techniques using machine learning
+
+
+
+
+2팀 : Biometrics Security : A Study on the Enhancement or Vulnerability of Biometrics Technology
+
+발표자 : 2024060219 조희연
+
+Fingerprint / Iris / Vein
+
+
+
+
+3팀 : Cyber security
+
+발표자 : 2024055578 이크완
+important(safety issues / economic impact) / key challenges( vehicular Networks/ Software Vulnerabilities)
+
+
+
+
+
+
+4팀 
+
+
+
+
+5팀 : Cloud Security : Essential Strategies for safe data management
+
+발표자 : 2024000555 진윤범
+
+benefit(lower upfront costs/ centrolized security)
+
+
+
+
+6팀 : The Role of AI in Building a Smart City
+
+발표자 : 2024037229 아미르 하지프 다닐
+
+AI's imformation / Necessity of Research( Economic Efficiency / Improved Citizen Services / Public Safety)
+
+
+
+
+7팀 : AI for Security and Security for AI
+
+발표자 : 2024073581 아인 하이파
+
+
+
+
+8팀 : Artificial Intelligence in Healthcare
+
+발표자 : 2024039889 알리
+
+deepfake-related Crimes / Impact on Victims and Society / 
+
+
+
+
+9팀 : Voice interface & IOT Security : Challenges & Solutions for Liveness detection
+
+발표자 : 2024051885 오태빈
+
+
+
+
+
+
+
+10팀 :  Blockchain for Cloud Security
+
+발표자 : 2024089825 다니엘 하리스
+
+Security / Transparency / Efficiency / Immutability
+
+
+
+
+
+
+
+11팀 : AI for security
+
+발표자 : 2022024793 이주안
+
+
+
+
+
+
+
+12팀 : Navigating Trust and Security In the Age of AI
+
+발표자 : 2024008368 윤종운
+
+proposal : AI cybersecurity
+
+
+
+
+
+
+
+13팀 : Impact of Generative AI on Climate Change and Sustainable Solution
+
+발표자 : 2024020355 우시현
+
+
+
+
+
+
+
+14팀 : Can Ai replace programmers?
+
+발표자 : 2024038959 나우팔

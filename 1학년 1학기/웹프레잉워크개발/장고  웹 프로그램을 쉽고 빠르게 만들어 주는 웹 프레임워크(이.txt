@@ -1,0 +1,386 @@
+장고 : 웹 프로그램을 쉽고 빠르게 만들어 주는 웹 프레임워크(이미 만들어진 많은 기능을 가짐)
+	 보안이 강화된 웹 프레임워크(SQL 인젝션/XSS/CSRF/클릭재킹)
+
+장고 개발 환경 준비 : 
+
+1. 파이썬 가상 환경 알이보기
+
+파이썬 가상환경 => 하나의 pc 안에 독립된 가상환경을 여러개
+
+2. 파이썬 가상 환경 사용해보기
+
+cd\ => 맨 위 C: 디렉터리로 감
+mkdir venvs => 새 디렉터리 만들기(디렉터리이름)
+cd venvs => venvs로 이동
+
+python -m venv mysite => 파이썬 모듈 중 venvs라는 모듈 사용 (가상환경이름)
+
+cd C:\venvs\mysite\Scripts => Scripts 디렉토리로 이동
+activate => 디렉토리 활성화 / deactivate => 벗어나기
+
+
+
+3. 장고 설치하기
+
+pip install django ==4.0.3
+
+최신버전 => 오류버전 나온 걸로
+
+
+장고의 프로젝트 => 하나의 웹 사이트 / 장고의 앱 => 프로젝트를 구성하는 작은 단위(관리자 앱, 인증 앱)=> 기본 제공 앱, 개발자 만든 앱
+
+
+프로젝트 디렉터리 생성 
+루트 디렉터리(프로젝트 모아둠) 생성하기 => C:\projects
+루트 디렉터리에서 가상환경에 진입 => C:\venvs\mysite\Scripts\activate
+
+(mysite)C:\projects>mkdir mysite => 파이보 프로젝트를 의미하는 mysite 디렉터리
+
+=> mysite 디렉터리로 이동 => 장고 프로젝트 생성 => django-admin startproject config .
+
+(. 은 현재 디텍토리 / 현재 디렉터리인 mysite 기준으로 장고 프로젝트를 생성하겠다 ) 
+
+
+
+
+개발 서버 구동
+
+=> (mysite)C:\projects\mysite>python manage.py runserver => http://127.0.0.1:8000 => 로컬서버 or 개발서버
+
+
+
+가상환경 진입하는 배치파일 => 
+[파일이름: C:/venvs/mysite.cmd] 
+@echo offcd 
+c:/projects/mysite
+c:/venvs/mysite/scripts/activate
+
+mysite.cmd 위치를 PATH 환경변수에 추가 => mysite.cmd 의 상위 디렉토리인 C:\venvs를 시스템의 환경 변수 PATH에 추가
+
+=> path 환경변수 내용 확인 => 명령프롬프트  set path
+
+=> mysite 명령만으로 가상환경 진입
+
+
+
+
+파이참 인터프리터 위치를 가상환경 위치로 설정
+
+=> 파이참에서 settings.py 파일로 한글과 시간 수정하기
+
+=> ko-kr ,   Asia/Seoul
+
+제2장 장고의 기본 요소 
+
+pybo 앱 생성하기
+(mysite)C:\projects\mysite>django-admin startapp pybo
+
+=> django-admin 의 startapp 명령을 이용하여 pybo 앱 생성
+
+
+404오류 => HTTP 오류코드 중 하나, 브라우저가 요청한 페이지를 찾을 수 없는 경우
+
+해결 => config/urls.py 파일에 pybo/ URL 에 대한 매핑을 추가하는 것
+
+urls.py 파일 =>  페이지 요청이 발생하면 가장 먼저 호출되는 파일 / URL과 뷰 함수 간의 매핑을 정의
+
+뷰함수 => view.py 파일에 정의된 함수
+
+projects/mysite/config/urls.py
+
+from pybo import views
+
+path("pybo/",views.index)  => urlpatterns 에 pybo URL이 요청되면 views.index를 매핑(path()) 하는 코드 
+
+
+
+pybo/views.py
+
+from django.http import HttpResponse
+
+def index(request):
+	retrun HttpResponse("안녕하세요~")
+
+
+장고 기본적인 흐름
+1. 브라우저에서 로컬서버로 페이지요청
+2. urls.py 파일의 urlpatterns 변수 안에서 '/pybo' URL의 매핑을 확인하여,
+3. views.py 파일의 index 함수를 호출하고
+4. 호출한 결과를 브라우저에 반영한다.
+
+위 작업 URL 매핑 추가할 때마다 config/urls/py 파일 수정 하는 문제
+=> pybo 앱에 관련된 것들은 pybo 앱 디렉터리 하위에 위치해야
+
+URL 분리
+
+config의 urls.py 파일 => 앱(pybo)x 프로젝트(mysite) 성격의 파일
+
+from django.urls import path, *include*
+from pybo import views => 삭제
+
+   path('pybo/', include('pybo.urls') => pybo/ 로 시작하는 url은 pybo/urls.py 파일을 불러 매핑해라
+
+projects/mysite/pybo/urls.py
+
+from django.urls import path
+from . import views
+
+urlpatterns =[
+	path('',views.index),
+]
+
+
+
+모델 
+
+장고는 모델을 이용하여 데이터베이스 처리
+
+admin, auth, contenttypes, sessions 앱들 -> 장고 실행시 기본적으로 설치되어 있는 앱
+
+messages, staticfiles 앱들 => 데이터베이스 상관x => 경고문 포함x
+
+데이터베이스 엔진 => django.db.backends.sqlite3 
+데이터베이스 파일 => BASE_DIR 디렉터리 밑에 db.sqlite3 파일에 저장한다
+BASE_DIR => 프로젝트 디렉터리, 우리 프로젝트의 BASE_DIR => C:\projects\mysite
+
+SQLite => 주로 개발용, 소규묘 프로젝트 => 가벼운 파일 기반의 데이터베이스
+
+(mysite)>python manage.py migrate => 해당 앱들이 필요로하는 데이터베이스 테이블들 생성
+
+
+DB Browser for SQLite => 데이터베이스 테이블들 확인
+
+
+SQL 단점 => 다양한 쿼리문 생성, 잘못 작성된 쿼리 => 시스템 저하
+ORM(Object Relational Mapping) => 데이터베이스의 테이블 모델화하여 사용 => 개발자 별 독특한 쿼리문 만들어질 x , 데이터베이스 종류 변경 but 프로그램 수정 필요 x
+
+
+파이보 => 질문과 답변 가능한 파이썬 게시판 서비스 
+
+질문 모델 => 속성 subject, content, creat_date(질문의 제목, 질문의 내요, 질문을 작성한 일시)
+
+답변 모델 => question, content, create_date(질문(어떤 질문의 답변인지 알아야하므로 질문 속성이 필요함, 질문의 내용, 답변을 작성한 일시)
+
+
+pybo/models.py
+
+from django.db import models
+
+class Question(models.Model): 
+	subject = models.CharField(max_length=200) # 글자수제한
+	content = models.TextField()  # 글자수제한x
+	create_date = models.DateTimeField()  
+
+class Answer(models.Model): 
+	question= models.ForeignKey(Question, on_delete=models.CASCADE) # ForeignKey =>다른 모델과 연결하기 위해 사용 / on_delete => 연결된 질문 삭제 -> 답변도 함께 삭제
+	content = models.TextField()
+	create_date = models.DateTimeField()
+
+
+위에서 만든 모델을 이용해서 테이블 생성
+
+config/settings.py 
+
+INSTALLED_APPS ={
+	'pybo.apps.PyboConfig', # pybo/apps.py 파일에 있는 PyboConfig 클래스 추가 
+}
+
+
+makemigrations로 새로 만든 모델 추가
+
+(mysite)> python manage.py makemigrations => pybo\migrations\0001_inital.py 파이썬 파일 자동 생성
+
+makemigrations 명령 => 모델 생성하거나 모델 변화가 있을 경우에 실행해야하는 명령
+
+
+
+sqlmigrate => 실행 가능한 쿼리만 설명
+
+
+
+migrate로 테이블 생성
+
+(mysite)> python manage.py migrate
+
+
+장고 셸 실행
+
+(mysite)> python manage.py shell
+
+>>> from pybo.models import Question, Answer
+
+>>> from django.utils import timezone
+>>> q = Question(subject='pybo가무엇인가요?',content='pybo에대해서알고싶습니다.',create_date=timezone.now())    #현재시간
+>>> q.save()        #Question 모델객체q저장
+
+>>>q.id => 1 ( id는 모델의 데이터의 유일한 값으로 프라이머리 키)
+
+
+
+
+이제2번째질문을만들어보자.
+>>> q = Question(subject='장고모델질문입니다.', content='id는자동으로생성되나요?', create_date=timezone.now())
+>>> q.save()
+>>> q.id      # 생성된id확인,괄호()없음주의!
+2
+
+
+
+Question 데이터 조회(Question.objects. 명령 사용법)
+
+>>> Question.objects.all  ()      #Question모델의모든데이터조회
+<QuerySet [<Question: Question object (1)>, <Question: Question object (2)  >
+
+=> QuerySet 객체 안에 2개의 object가 생성됨
+
+
+
+id 값 대신 제목을 표시
+
+pybo/models.py 
+
+class Question:
+
+	def __str__(self):
+		return self.subject
+
+장고 셸 종료 : quit()
+
+
+(mysite) c:\projects\mysite>python manage.py shell# 장고셸재시작
+>>>from pybo.models import Question, Answer      #모델import
+>>> Question.objects.all  ()        #Question모델의모든데이터조회
+<QuerySet [<Question: pybo가무엇인가요?>, <Question: 장고모델질문입니다.>]>
+
+모델에 메소드(함수)가 추가될 경우, makemigrations 와 migrate를 수행할 필요 x
+
+
+
+>>> Question.objects.filter(id=1)
+<QuerySet [<Question: pybo가무엇인가요?>]> # id가1인데이터의제목이조회됨
+
+
+
+>>> Question.objects.get(id=1)
+<Question: pybo가무엇인가요?>
+QuerySet없이, id 가1인Question 모델객체한건만리턴되었다
+
+
+
+이번에는filler를이용해서subject에"장고"라는문자열이포함된데이터만조회하는방법에대해서알아보자.
+>>> Question.objects.filter(subject__contains='장고') #언더바2개주의!
+<QuerySet [<Question: 장고모델질문입니다.>]>
+
+
+
+
+Question 데이터수정
+
+이번에는Question 데이터를수정해보자. 
+먼저다음과같이id가2인데이터를변수  q에저장한후,    q에저장된값을확인해보자.
+
+>>>q = Question.objects.get(id=2)        #q는임시변수로사용
+>>> q                                                            #q에저장된값확인
+<Question: 장고모델질문입니다.>     #id=2의제목이출력됨
+
+
+
+아래처럼subject 속성으로데이터를수정합시다.
+
+>>> q.subject = 'Django Model Question'
+
+
+
+
+데이터가변경됐으면save() 함수로저장하는것잊지말기
+
+
+>>> q.save()
+>>> q                   #변경된데이터확인
+<Question: Django Model Question>
+
+
+
+Question 삭제
+이번에는id 값이  1인  Question 데이터를삭제해보자. 
+
+>>> q = Question.objects.get(id=1) #id=1인데이터를q로연결(사실파이썬에서변수간저장 은저장이아니라참조임)
+>>> q.delete()# q에연결된  i d=1데이터를삭제
+(1 , {  'pybo.Question':  1})# (1개삭제, {‘pybo앱.   Question모델’에서  i d=1번} )
+
+
+Answer 작성이번에는답변데이터를생성해보자.
+>>> q = Question.objects.get(id=2)#id=2의데이터를  q에연결
+>>> q#확인
+<Question: Django Model Question> # id=2의변경된제목출력(질문내용은'id는자동으로생성되나요?'였음)   
+>>> from django.utils import timezone 
+>>> a = Answer(question=q, content='네자동으로생성됩니다.' , create_date=timezone.now())  
+ #Answer모델안에만들었던  3개의속성중question변수는  Question모델에서받아와야함. 
+>>> a.save()  #데이터생성후저장잊지말기
+
+
+Answer 조회(Answer.objects. 명령이용) 
+Answer의id 값으로조회해보자. 
+>>> Answer.objects.get(id=1) 
+<Answer: Answer object (1)>      #Answer 모델안에  __str__()메소드를안넣어서,  id가출력됨
+>>> Answer.objects.all()
+<QuerySet [<Answer: Answer object (1)>]>
+
+
+
+Answer 객체에연결된질문을보고싶을땐, Answer 모델안에만든question속성을이용할수있다. 
+>>> a.question
+<Question: Django Model Question> 
+
+반대로, Question객체를이용하여답변(Answer)을찾는것도가능
+>>> q.answer_set.all()    # q(Question의  i d=2 데이터)의.답변집합의.모든데이터<QuerySet [<Answer: Answer object (1)>]>
+
+
+
+< 연결모델명_set 명령  > 
+- 연결모델명은소문자로쓰기! 
+-  primary key하나에는여러개의  foreign key 연결이가능하므로q.answer_set.이가능하지만-(DB아는경우) 
+(즉, 질문하나에는여러개의답변이가능하므로q.answer_set.이가능하지만)-(DB모르는경우)   
+- foreign key 하나에는여러개의  primayt key 가있을수없으므로a.question_set은불가능하다. -(DB아는경우)   
+(즉, 답변하나에는여러개의질문이있을수없으므로a.question_set은불가능하다.  ) -(DB모르는경우)
+-연결모델명_set방법은자주사용하니꼭기억해두도록하자. 
+
+
+
+python manage.py createsuperuser => 슈퍼유저 생성
+
+(mysite)> python manage.py createsuperuser
+
+사용자 이름 : admin
+이메일 주소 : admin@mysite.com
+Password : 1111
+Password (again) 1111
+
+
+
+모델 관리
+
+pybo/admin.py
+
+from .models import Question
+
+admin.site.register(Question)  #admin의 화면(site)에 등록(register)해라 (Question 모델)
+
+
+
+pybo/admin.py
+
+class QuestionAdmin(admin.ModelAdmin):
+	search_fileds = ['subject']
+
+admin.site.register(Question, QuestionAdmin)
+
+
+
+질문목록만들기
+
+6주차 2장 보고 따라 적어 
+
+
+
+

@@ -1,0 +1,19 @@
+Introduction
+
+Hello everyone! Today, we’ll be discussing the importance of English for software engineers. As software engineers, English plays a huge role in many areas of our work, from accessing research to communicating with global teams. Our team has identified a few key areas where English is especially important.
+
+1. Access to Information and Research
+First, let's talk about access to information and research. English is considered the world's common language, and most software engineering information, like research papers and technical documentation, is written in English. Since there are more research papers published globally than in Korea, being able to read English helps us stay up to date with the latest trends and technologies in our fast-paced industry.
+
+2. Global Communication and Collaboration
+The second point is global communication and collaboration. In the IT industry, English is the main language for communication with developers from all over the world. Especially after the COVID-19 pandemic, remote work has become more common, which means we are collaborating more with developers from other countries. This makes English an even more necessary skill for smooth and efficient teamwork.
+
+3. Programming Languages and Software Development
+Next, we have the connection between programming languages and English. Many programming languages, like Python and JavaScript, were developed with English as their base. Even though developers from all around the world use these languages, English remains the foundation. So, having a good grasp of English not only helps us understand code more easily but also improves our overall coding skills.
+
+4. The Growth of AI
+Finally, let’s look at how English is tied to the growth of AI. AI tools, like ChatGPT, are primarily trained on English data. This means that if you ask questions in English, you’ll get better and faster responses. As new technologies emerge, being able to understand and use English is essential to staying ahead in the software industry.
+
+[Conclusion]
+
+In conclusion, English is not just another skill for software engineers—it’s essential. Whether it’s for accessing research, working with global teams, programming, or utilizing AI tools, English is a key part of everything we do. Thank you for listening!

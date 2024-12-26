@@ -1,0 +1,234 @@
+// ConsoleApplication10.cpp : 이 파일에는 'main' 함수가 포함됩니다. 거기서 프로그램 실행이 시작되고 종료됩니다.
+//
+
+#include <stdio.h>
+
+
+//=====================Ex 11 - 6 =============
+//int main()
+//{
+//	int num = 10;
+//	int y = 40;
+//	int* ptr = &num;
+//	int* * dptr = &ptr;
+//
+//	printf("%d \n", num); // 10
+//	printf("%d \n", *ptr); // 10
+//	printf("%d \n", **dptr); // 10
+//	
+//	//ptr = &y;
+//	*dptr = &y; 
+//	printf("%d \n", **dptr); // 40
+//
+//	return 1;
+//}
+
+
+//===============EX 11- 7========
+
+//void swap(int** p ,int** q) {
+//	int* temp = *p;
+//	*p = *q;
+//	*q = temp;
+//
+//}
+//
+//int main() {
+//
+//	int first = 20;
+//	int second = 30;
+//	int* fp = &first;
+//	int* sp = &second;
+//
+//	printf("%d \n", *fp); // 20
+//	printf("%d \n", *sp); // 30
+//
+//	swap(&fp, &sp);
+//	printf("%d \n", *fp); // 30
+//	printf("%d \n", *sp); // 20
+//
+//
+//	return 1;
+//}
+
+
+//===================
+//int add(int x, int y) { return x + y; }
+//
+//int sub(int x, int y) { return x - y; }
+//
+//
+//int main() {
+//	
+//	//  int(int, int)* fptr = add;  의미상으로 만듦
+//
+//	int (*fptr) (int, int) = add;
+//
+//	printf("%d \n", add(2, 3)); // 5
+//	printf("%d \n", fptr(2, 3)); //5
+//
+//	fptr = sub;
+//	printf("%d \n", fptr(2, 3)); // -1 
+//
+//	// 다용성(overriding) : 객체지향에서 같은 함수지만 다른 기능을 함 
+//
+//	return 1;
+//
+//
+//}
+
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdlib.h>
+
+//int main() {
+//
+//	int* ptr= (int *)malloc(sizeof(int));
+//	if (ptr == NULL)
+//		return 0;
+//	*ptr = 30;
+//	printf("%d \n", *ptr);
+//
+//	free(ptr);
+//
+//
+//	return 1;
+//}
+
+//int* get_number() {
+//
+//	int *ptr = (int*)malloc(sizeof(int));
+//	if (ptr == NULL)
+//		return NULL;
+//	else {
+//		*ptr = 20;
+//		return ptr;
+//	}
+//}
+//
+//int main() {
+//
+//
+//	int* p = get_number();
+//	printf("%d \n", *p);
+//	free(p);
+//	
+//
+//	return 1;
+//}
+
+//// ===========ex 11- 12==============
+//#define MAX 4
+//
+//int* square_array() {
+//	int* p = (int*)malloc(MAX * sizeof(int));
+//	if (p == NULL)
+//		return NULL;
+//	for (int i = 0; i < MAX; i++)
+//		p[i] = i * i;
+//	return p;
+//}
+//
+//int main() {
+//
+//	int* arr = square_array();
+//	for (int i = 0; i < MAX; i++)
+//		printf("%d ,", arr[i]);
+//	printf("\n");
+//	free(arr);
+//	arr = NULL;
+//
+//
+//}
+
+// ==========
+
+//int main() {
+//
+//	int arr[2][3] = { 1,2,3,4,5,6 };
+//	//int arr[2][3] = { {1,2,3}, {4,5,6 } };
+//
+//	printf("%d \n", arr[1][2]);
+//
+// 	int  (*ptr) [3] = arr;
+//	printf("%d \n", ptr[1][2]);
+//
+//
+//	/*int* p = arr;*/
+//	//p[1][2]  
+//	           /* Error   p를 참조한다는 것은 주소에 가서 뚜껑을 열고 이미 p는 정수다
+//		       근데 정수를 포인터처럼 쓸려고 해서 Error*/
+//
+//	printf("%p \n", arr);
+//	printf("%p \n", arr+1); // 12byte를 점프
+//
+//	printf("%p \n", *arr); // &arr ==> 1차원 배열, 원소는 int
+//	printf("%p \n", *arr  + 1); // 4byte 차이 
+//
+//	printf("%d \n", arr[1][2]); 
+//
+//}
+
+#include  <stdlib.h>
+//int main() {
+//	 int(*p)[3] = (int(*)[3])malloc(2 * 3 * sizeof(int));
+//
+//	 if (p == NULL)
+//		 return NULL;
+//	 
+//	 for (int i = 0; i < 2; i++)
+//		 for (int j = 0; j < 3; j++)
+//			 p[i][j] = i + j;
+//
+//
+//	 for (int i = 0; i < 2; i++) {
+//		 for (int j = 0; j < 3; j++)
+//			 printf("%d, ", p[i][j]);
+//		 printf("\n");
+//	 }
+//	 free(p);
+//	 p = NULL;
+//}
+
+
+//void initial(int (*p) [3]) // (2행 3열 이차원 배열)  int [3] * p
+//{
+//	//이차원 배열의 값을 초기화
+//	for (int i = 0; i < 2; i++)
+//		for (int j = 0; j < 3; j++)
+//			p[i][j] = i + j;
+//}
+//
+//void print_2d_arr(int (*p)[3])
+//{
+//	for (int i = 0; i < 2; i++) {
+//		 for (int j = 0; j < 3; j++)
+//			 printf("%d, ", p[i][j]);
+//		 printf("\n");
+//	 }
+//}
+//
+//
+//int main() {
+//	 int(*p)[3] = (int(*)[3])malloc(2 * 3 * sizeof(int));
+//
+//	 if (p == NULL)
+//		 return NULL;
+//	 
+//	 //for (int i = 0; i < 2; i++)
+//		// for (int j = 0; j < 3; j++)
+//		//	 p[i][j] = i + j;
+//	 initial(p);
+//
+//
+//	 /*for (int i = 0; i < 2; i++) {
+//		 for (int j = 0; j < 3; j++)
+//			 printf("%d, ", p[i][j]);
+//		 printf("\n");
+//	 }*/
+//	 print_2d_arr(p);
+//
+//	 free(p);
+//	 p = NULL;
+//}
+
+

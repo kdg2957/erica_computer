@@ -1,0 +1,33 @@
+def jj(n):
+    for i in range(n):
+        for j in range(n):
+            print(n+1,end=" ")
+        print()
+        
+def digit_art_vertical_right_down(n):
+    for i in range(n):
+        for j in range(i,n):
+            print("", end='')
+        for j in range(i,n):
+            print(i+1, end= ' ')
+        print()
+        
+def digit_art_vertical_right_up(n):
+    for i in range(n):
+        for j in range(n):
+            if j < i:
+                print(" ", end=" ")
+            else:
+                print(i+1, end= ' ')
+        print()
+                
+                
+                
+def digit_art_vertical_alternate(n):
+    for i in range(n):
+        for j in range(n):
+            if j % 2 == 0:
+                print(i+1, end= ' ')
+            else:
+                print(n-i, end= ' ')
+        print()

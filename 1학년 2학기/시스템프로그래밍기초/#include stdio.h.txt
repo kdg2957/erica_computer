@@ -1,0 +1,63 @@
+#include <stdio.h>
+#include <limits.h>
+
+int main()
+
+{
+	
+	printf("size of 900 is %d bytes. \n", sizeof(900));
+	
+	
+	printf("size of 5000000000 is %d bytes. \n", sizeof(5000000000));
+
+	printf("size of 2.5f is %d bytes. \n", sizeof(2.5f));
+	printf("size of 2.5 is %d bytes. \n", sizeof(2.5));
+
+	
+	printf("size of Hello is %d bytes. \n", sizeof("Hello"));
+
+	printf("size of A is %d bytes. \n", sizeof("A"));
+	
+
+
+	char ch;
+	ch = 'A';
+	printf("value of ch is %d bytes. \n", ch); // 65
+	printf("value of ch is %c bytes. \n", ch); //'A'
+
+	printf("-------------\n");
+
+	printf("size of char is %d bytes. \n", sizeof(char));
+	printf("size of short is %d bytes. \n", sizeof(short));
+	printf("size of int is %d bytes. \n", sizeof(int));
+	printf("size of long is %d bytes. \n", sizeof(long));
+	printf("size of long long is %d bytes. \n", sizeof(long long));
+	printf("size of float is %d bytes. \n", sizeof(float));
+	printf("size of double is %d bytes. \n", sizeof(double));
+	printf("size of long double is %d bytes. \n", sizeof(long double));
+	printf("INT_MIN is %d. \n", INT_MIN); //-2147483648
+
+	
+	double dl = 2.5;
+
+	printf(" value of dl is %f \n", sizeof(dl)); //2.500000
+
+	//long long x = 5000000000;
+
+	//int x;// 선언
+	//x = 100;  // 대입
+
+	//int x = 100;
+
+	//int y;
+	//y = x + 300;
+
+	//printf(" x is %d, y is %d \n", x, y);
+	//printf("the end");
+
+	//printf("Hello");
+
+	return 0;
+	
+
+}

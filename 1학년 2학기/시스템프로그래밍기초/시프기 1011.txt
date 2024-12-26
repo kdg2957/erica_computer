@@ -1,0 +1,260 @@
+시프기 1011
+
+// ConsoleApplication4.cpp : 이 파일에는 'main' 함수가 포함됩니다. 거기서 프로그램 실행이 시작되고 종료됩니다.
+//
+
+#include <stdio.h>  // headr file ==> 라이브러리 함수의 원형이 선언되어 있는 파일
+
+
+////==========ex 4.1 =========
+
+//int add(int , int ); // 함수 선언  형식매개변수
+//
+//int main()
+//{
+//    int a, b, sum;
+//    a = 10; b = 20;
+//    sum = add(a, b); // 함수 호출   실매개변수
+//    printf("a + b = %d \n", sum);
+//
+//
+//    return 1;
+//}
+//
+//
+//int add(int a, int b) // 함수 정의(구현)
+//{  
+//    int total = a + b;
+//
+//    return total;
+//}
+
+//============ex 4.2 =============
+
+//int square(int m);
+//int square_add(int first, int second);
+//
+//int main() {
+//
+//	int first = 2, second = 3;
+//	int sum = square_add(first, second);
+//	printf("square add is %d \n", sum);
+//
+//	return 1;
+//}
+//
+//int square(int m) {
+//
+//	//int sq = m * m;
+//	return m * m;
+//}
+//
+//int square_add(int first, int second) {
+//
+//	int total = square(first) + square(second);
+//
+//	return total;
+//}
+
+//=============ex 5. 1===========
+
+//int main() {
+//
+//	int a = 5;
+//
+//	if (a % 2 == 0)
+//	{
+//		printf("a is even number. \n");
+//	}
+//	else
+//		printf("a is odd number \n");
+//
+//	//if (a % 2 == 1)
+//	//{
+//	//	printf("a is odd number \n");
+//	//}
+//	printf("a is %d \n", a);
+//	return 1;
+//}
+
+//============ex 5.2 ========
+
+//int main() {
+//
+//	/*int a = 50, b = 100;*/
+//
+//	//if (a > b)
+//	//	printf("a is larger than b \n");
+//	//else
+//	//{
+//	//	if (a < b)
+//	//		printf("a is smaller than b \n");
+//	//	else
+//	//		printf("a is equal with b \n");
+//	//}
+//
+//	//printf(" the end \n");
+//
+//
+//	/*if (a > b)
+//		printf("a is larger than b \n");
+//
+//	else if (a < b)
+//		pirntf(" a is smaller b \n");
+//	else
+//		pirntf(" a is equal with b \n");
+//
+//	printf(" the end \n");
+//
+//	return 1;*/
+//}
+
+
+//==========ex 5. 3========
+
+//int main() {
+//
+//	int score = 95;
+//
+//	char grade;
+//
+//	if (score >= 90)
+//		grade = "A";
+//	//else if (score < 90 && score >= 80)
+//	else if (score >= 80)
+//		grade = "B";
+//	else
+//		grade = "F";
+//
+//	printf("grade is %c \n", grade);
+//
+//	return 1;
+//}
+
+
+//========ex 5.5 =========
+
+//int get_min(int a, int b, int c) {
+//
+//	if (a < b && a < c)
+//		return a;
+//	else if (b < a && b < c)
+//		return b;
+//	else
+//		return c;
+//}
+
+//int get_min(int a, int b, int c)  // a == 10 , b == 5, c == 40
+//{
+//	
+//	int min = a; // min == 10
+//
+//	if (b < min) // (5 < 10 ) true
+//		min = b;  // min == 5
+//	if (c < min) // (40 < 5 ) False
+//		min = c;  
+//		
+//	return min;
+//}
+
+
+//int get_min(int a, int b, int c) 
+//{
+//	int min;
+//
+//	if (a < b)
+//		min = a;
+//	else
+//		min = b;
+//
+//	if (c < min)
+//		min = c;
+//
+//	return c;
+//
+//}
+//
+//int main() {
+//	
+//	int a, b, c;
+//	a = 10, b = 5, c = 40;
+//	int min = get_min(a, b, c);
+//	printf("min is %d \n", min);
+//
+//	return 1;
+//}
+
+
+// ==========ex 5.8 =======
+
+//int main()
+//{
+//	int a = 1, b = 0;
+//
+//	if (a) // outer- if
+//	{
+//
+//		if (b) // inner - if
+//			printf("a and b are both true \n");
+//	}
+//		
+//	else // outer - if
+//		printf("a is not true \n");
+//
+//	return 1;
+//}
+
+#include <math.h>
+// ============ex 5. 11 ==========
+
+void zero_order(int a, int b, int c); // no solution
+
+void first_order(int a, int b, int c); // 1st equation
+
+double calc_D(int a, int b, int c);  // 
+
+void second_order(int a, int b, int c);  // 2nd equation
+
+int main()
+{
+	int a, b, c;
+	a = 0, b = 5, c = 4;
+
+	if (a != 0)
+		second_order(a, b, c);
+	else if (b != 0)
+		first_order(a, b, c);
+	else
+		zero_order(a, b, c);
+
+	return 1;
+}
+
+	void zero_order(int a, int b, int c) 
+	{
+		printf("There is no root. \n");
+	}
+
+	void first_order(int a, int b, int c)
+	{
+		printf("The root is %.3f \n", (-c) / (double)b );
+	}
+
+	double calc_D(int a, int b, int c) /// b*b -4*a*c
+	{
+		return (double)(b * b - 4 * a * c);
+	}
+
+	void second_order(int a, int b, int c)
+	{
+		double root1, root2, D, root_D;
+
+		D = calc_D(a, b, c); // b * b - 4 * a * c
+
+		root_D = sqrt(D);
+
+		root1 = (-b + root_D) / (2.0 * a);
+		root2 = (-b - root_D) / (double)(2 * a);
+
+		printf("The roots are %.3f and %.3f \n", root1, root2);
+	}

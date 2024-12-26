@@ -1,0 +1,173 @@
+시스템프로그래밍기초 1107 [2024052015] 김동건
+// ConsoleApplication8.cpp : 이 파일에는 'main' 함수가 포함됩니다. 거기서 프로그램 실행이 시작되고 종료됩니다.
+//
+
+#include <stdio.h>
+#define _CRT_SECURE_NO_WARNINGS
+
+//int main()
+//{
+//	int x = 50;
+//
+//	int *ptr; // int형 포인터변수 (int 가 포인터의 형식 )
+//	ptr = &x; 
+//	*ptr = 5000;
+//	//L-value(그 1000번지 연 그 자리) = R-value (값) ,, 즉 5000을 x에 넣겠다
+//	printf("%d \n", x); // 5000
+//	printf("%p \n", ptr); // 0000ed
+//	printf("%p \n", &x); // 0000ed
+//	printf("%p \n", &ptr); // 0000xs
+//	printf("%d \n", *ptr); // 5000
+//	printf("%d \n", sizeof(ptr)); // 포인터변수는 8byte
+//
+//
+//}
+
+
+//int main() {
+//
+//	double dbl = 3.4;
+//	double *ptr; // double* ptr 이렇게 해도 됨 
+//	 // 절대 포인터에 상수값 넣으면 안됨 ptr = 2000;
+//	ptr = &dbl;
+//
+//	dbl = *ptr + 10.0;
+//
+//	printf("%f \n", dbl);
+//	printf("%f \n", *ptr);
+//	printf("%p \n", ptr);
+//	printf("%p \n", &ptr);
+//
+//
+//
+//
+//	return 1;
+//}
+
+//================= Ex =========
+
+//void times(int *ptra, int *ptrb)  // call by pointer
+//{ 
+//
+//	*ptra = *ptra * 10;
+//	*ptrb = *ptrb * 10;
+//
+//}
+//
+//int main() {
+//
+//	int a = 10, b = 20;
+//
+//	times(&a, &b);
+//
+//	printf("%d %d \n", a, b);
+//
+//	return 1;
+//}
+
+
+//========================
+
+//void min_max(int a, int b, int *min, int *max) {
+//
+//	if (a > b)
+//	{
+//		*max = a;
+//		*min = b;
+//	}
+//	else
+//	{
+//		*max = b;
+//		*min = a;
+//	}
+//
+//}
+//
+//main() {
+//
+//	int a = 10, b = 20;
+//	int max, min;
+//
+//	min_max(a, b, &min, &max);
+//	printf("min = %d, max = %d \n", min, max);
+//
+//	return 1;
+//}
+
+//==============
+
+//void swap(int* ptra, int* ptrb) {
+//
+//	int temp;
+//	//*ptra => main 함수 안에 있는 변수 a와 같다
+//	temp = *ptra;
+//	*ptra = *ptrb;
+//	*ptrb = temp;
+//
+//	//*ptrb => main 함수 안에 있는 변수 b와 같다
+//}
+//
+//int main() {
+//
+//
+//	int a = 10, b = 20;
+//	swap(&a, &b);
+//	printf("a = %d, b = %d \n", a, b);
+//	
+//
+//	return 1;
+//}
+
+// ===========EX 10 - 5 ================
+
+//int* large(int* pa, int* pb) {
+//
+//	if (*pa > *pb)
+//		return pa;
+//	else
+//		return pb;
+//
+//}
+//
+//
+//int main() {
+//
+//	int a = 10, b = 20;
+//	int* ptr = large(&a, &b);
+//	printf("&d \n", *ptr);
+//
+//
+//	return 1;
+//}
+
+//====================
+
+int max(int* ptr, int length) {
+
+	int m = *(ptr + 1);  // ptr[1] ==  *(ptr + 1) 
+	for (int i = 0; i < length; i++) 
+		if (m < *(ptr + i))
+			m = ptr[i];
+	
+	return m;
+
+}
+
+void printfArray(int* ptr, int length) {
+
+	for (int i = 0; i < length; i++)
+		printf("%d,  ", *(ptr + i));
+		//printf("%d,  ", ptr[i]);
+	printf("\n");
+}
+
+int main() {
+
+	int arr[4] = { 36, 8, 90, 71 };
+	int m; int length = sizeof(arr) / sizeof(int);
+	printfArray(arr, length);
+	m = max(arr, length );
+	printf("%d \n", sizeof(arr)); //16byte
+	printf("%d \n", sizeof(arr) / sizeof(int)); //16byte / 4 = 4byte
+	printf("%d", m);
+}

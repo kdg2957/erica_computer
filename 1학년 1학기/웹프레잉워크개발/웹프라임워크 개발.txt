@@ -1,0 +1,1168 @@
+웹프라임워크 개발
+
+2-04 질문목록과 질문상세 기능
+
+
+[projects/mysite/pybo/views.py]
+
+from django.shortcuts import render
+from .models import Question
+def index(request):          #views파일요청이들어오면
+	question_list = Question.objects.order_by(‘- create_date')     #q  uestion_list(변수) 생성
+	context = {'question_list': question_list}     #   question_list를  context의  ‘question_list’(속성)로지정
+	return render(request,  'pybo/question_list.html', context)
+
+order_by() 오름차순 => create_date '작성일시' - => 내림차순
+
+render() => 파이썬 데이터에 템플릿 적용 => HTML 형태 
+
+[projects/mysite/config/settings.py]
+
+TEMPLATES = [ 'DIRS': [ BASE_DIR/'templates' ], ]  
+
+BASE_DIR => c:\projects\mysite\templates
+
+mysite 하위의 templates 디렉터리가 아니어도, 앱(pybo) 디렉터리 하위에 있는 디렉터리도 템플릿 디렉터리로 인식한다.
+
+모든 앱이 사용하는 공용 템플릿 디렉터리 - projects/mysite/templates
+공영 디렉터리 안에 pybo 앱만 - projects/mysite/templates/pybo
+공영 디렉터리 안에 common 앱만 - projects/mysite/templates/common
+
+ㆍ탬플릿 파일 생성
+
+[templates/pybo/question_list.html]
+
+{% if question_list %}                      <!  --   {% ...  %}는템플릿태그  --> 
+	<ul>                                             <!  -- <ul> unorder list-->
+	{%for question in question_list %}
+	<li><a href= "/pybo/{{ question.id }}/">{{ question.subject }}</a></li> <!  -- <a> anchor, <li> list -->
+		 <!  --   "  question객체의  id를출력하여주소로만들고  ”  ,   {{질문제목}}을화면에출력-->
+	{% endfor %}
+	</ul> 
+	{% else %} 
+		<p>질문이없습니다.</p>      <!  -- <p> paragraph   -->
+	{% endif %}
+
+
+{% %} => 템플릿 태그
+
+{{ question.id }} => for문  question에 대입된 question_list 객체들의 id를 출력
+
+question_list => render() 함수로 전달받은 "질문 목록" 데이터
+
+
+forloop.counter => 루프내의 순서로 1부터 표시(기본값1)
+forloop.counter0 => 루프내의 순서로 0부터 표시
+forloop.first => 루프의 첫번째 순서인 경우 True
+forloop.last => 루프의 마지막 순서인 경우 True
+
+객체 출력 {{ 객체 }}  객체 속성 {{ 객체.속성 }}
+
+ㆍ urls.py에 url 매핑하기
+
+[projects/mysite/pybo/urls.py]
+
+urlpatterns = [ path('<int:question_id>/', views.detail), ]
+
+ㆍviews.py 화면 추가하기
+
+[ mysite/pybo/views.py ]
+
+def detail(request, question_id): # 요청을 받을 때 question_id 받음
+	question = Question.objects.get(id=question_id)  # 해당 id의 질문 가져오기
+	context = { 'question': question }  # 가져온 질문을 context 속성의 'question'으로 지정
+	return render(request, 'pybo/question_detail.html', context)  # context의 질문을 html 탬플릿으로 번경
+
+ㆍquestion_detail.html 템플릿 작성
+
+[ templates/pybo/question_detail.html ]
+
+<h1> {{ question.subject }} </h1> # 질문 제목 출력 / header 큰 글씨
+<div>
+	{{ question.content }}  # 질문 내용 출력 / division 레이아웃 나누기
+</div>
+
+오류코드
+200 => 성공 (OK)
+500 => 서버오류
+404 => 서버가 요청한 페이지르 찾을 수 없음
+
+[ pybo/views.py ]
+from django.shortcuts import render, get_object_or_404
+
+def detail(request, question_id):
+	question get_object_or_404(Question, pk=question_id)  기본키(pk) question_id
+
+	=> 질문 있으면 가져 / 없으면 404 eror
+
+
+장고 제네릭뷰 
+=> 특정한 패턴이 있는 뷰, 패턴화하고 간력하게 만듦
+but 오류 발생시 해결 어려움, 복잡한 케이스에 경우 더 어렵게 작성되는 경우 발생
+
+views.py에 index 나 detail => 제네릭 뷰로 변경
+
+class IndexView(generic.ListView):
+	def get_question(self):
+		return Question.objects.order_by('-create')
+
+class DetailView(generic.DetailView):
+	model = Question
+
+
+2-05 URL 별명
+
+템플릿에서 일일이 URL 수정하지 않기 위해 해당 URL에 대한 실제 링크 대신 / 링크의 주소가 1:1 매핑되어 있는 별명을 사용
+
+[ project\mysite\pybo\urls.py ]
+
+urlpatterns = [ path('', views.index, name='index'),
+		    path('<int:question_id>/', views.detail, name='detail'),
+ ]
+
+http://localhost:8000/pybo/  => index라는 별명
+http://localhost:8000/pybo/2  => detail 별명
+즉 '<int:question_id>/' 링크의 별명 detail
+
+실제 URL "/pybo/{{ question.id }}/"  => 별명 URL  "{% url 'detail' question.id %}"
+
+question.id => pybo.urls 파일에서 'detail' 별명과 매칭되었던 '<int:question_id>/'
+
+즉, URL 별명 detail은 '<int:question_id>/' 를 말하면,  question.id 의 값을 > detail을 통해 > '<int:question_id>/'에게 줄 것
+
+
+파라미터 명을 직접 받기 => {% url 'detail' question_id=question.id %}
+
+2 개 이상의 파라미터를 사용하기 (공백 문자 이후) => {% url 'detail' question_id question.id page=2 %}
+
+
+ㆍ중복문제 해결
+
+pybo/urls.py 네임스페이스를 의미하는 app_name 변수 지정
+
+[ mysite\pybo\urls.py ]
+
+app_name = 'pybo'
+
+=> NoReverseMatch at /pybo/
+
+오류 해결 => 템플릿(question_list.html)에서 사용한 URL 별명 네임스페이스
+
+[ mysite\templates\pybo\question_list.html ]
+
+<li><a href="{% url '?pybo?:detail' question.id %}">
+
+redirect('pybo:detail',question_id=question.id) => 특정 페이지로 이동시키는 함수
+
+2-06 답변 등록 기능
+
+ㆍ답변 등록 폼
+[ templates\pybo\question_detail.html ]
+
+<h1>{{ question.subject }}</h1>
+<div>
+	{{ question.content }}
+</div>
+<form action="{% url 'pybo:answer_create' question.id %}" method="post">
+{% csrf_token %}  # 보안관련 / <form> 으로 전송한 데이터가 실제 웹 페이지에서 작성한 데이터인지 판단하는 가늠자 역할 / 이상한 데이터 블록킹 / <form> 바로 밑 /  post 요청시 없으면 에러
+<textarea name="content" id="content" rows="15"></textarea> #텍스트 창 생성 / 행 15개
+
+<input type="submit" value="답변등록"> # 버튼 생성 / 전송기능, '답변등록'버튼
+
+</form>
+
+
+CSRF => 웹 사이트 취약점 공격 방지 / 토큰 전송으로 판단 / CsrfViewMiddleware 미들웨어 필요 / settings.py의 MIDDLEWARE 항목에 디폴트로 추가
+
+
+ㆍURL 매핑(pybo.urls.py)
+
+[ pybo\urls.py ]
+
+urlpatterns = [ path('answer/create/<int:question_id>/', views.answer_create, name='answer_create'), ] 
+
+ㆍ뷰 함수(views.py)
+
+[ pybo\views.py ]
+
+from ... import render ... redirect
+from django.utils import timezone
+
+def answer_create(requset, question_id):
+	question = get_object_or_404(Question, pk=question_id)
+	question.answer_set.create(content=request.POST.get('content'), create_date=timezone.now())
+	return redirect('pybo:detail', question_id=question.id)
+
+
+answer_create 함수 => 매개변수 question_id는 URL 매핑에 의해 값이 전달 
+
+매개변수 request 에는, pybo/question_detail.html의 <textare>태그에 입력된 데이터가 파이썬 객체에 담겨 넘어온다.
+이 값은 request.POST로 요청된 form 데이터 항목 중 content 값을 의미
+( POST 형식으로 요청된 form 데이터 항목 중 name='content' 인 값을 의미 )
+
+답변을 생성하기 위해 question.answer_set.create() 함수 사용
+
+question.answer_set은 질문과 연결된 답변들 의미 Answer 모델은 ForeignKey로 Question 모델을 참조 => question 에서 answer_set 을 사용함
+
+상세화면 호출하려면 redirect() 함수 사용 => 함수에 전달된 값을 참고하여 페이지 이동 수행
+
+redirect() 함수의 첫 번째 인수에는 '이동할 페이지의 별칭' 을 두 번째 인수에서는 '해당 URL 에 전달해야 하는 값'을 받아야 함
+
+
+ㆍ 답변을 화면에 저장하는 또다른 방법 => Answer 모델을 직접 사용하는 방법
+
+ question.answer_set.create(content=requset.POST.get('content'),create_date=timezone.now())
+
+=> 
+
+def answer_create(request, question_id):
+	"""
+	pybo 답변등록
+	"""
+	question = get_object_or_404(Quesiton, pk=question_id)
+	answer = Answer(question=question, content=request.POST.get('content'), create_date=timezone.now())
+	answer.save()
+	return redirect('pybo:detail', question_id=question.id)
+
+ㆍ 답변 조회(답변 표시하기)
+
+[ templates\pybo\question_detail.html ]
+
+<h5>{{ question.answer_set.count }}개의 답변이 있습니다.</h5>  # 답변 총 개수 출력
+<div>
+	<ul>
+	{% for answer in question.answer_set.all %}  # question 의 질문과 연결된 모든 답변들 한 번씩 꺼냄
+		<li> {{ answer.content }} </li>  # 답변 내용 출력
+	{% endfor %}
+	</ul>
+</div>
+
+
+
+2-07 화면 디자인(static 디렉터리)
+
+스타일시트(stylesheet, CSS 파일)은 장고의 static 디렉터리에 저장
+
+[ config\settings.py ]
+
+STATIC_URL = 'static/'
+STATICFILES_DIRS = [
+	BASE_DIR / 'static', => C:\projects\mysite\static # 공용 static 디렉터리
+]
+
+
+style.css 파일 생성 
+
+[ static\style.css ]
+
+textarea {
+	width:100%; # 답변 등록시 사용하는 텍스트 창의 넓이를 100%
+}
+
+input[type=submit] {
+	margin-top:10px  # [답변등록] 버튼 상단에 10 픽셀의 마진 - 여유공간
+}
+
+스타일시트 파일을 질문 상세 템플릿에 적용
+
+[ templates\pybo\question_detail.html ]
+
+{% load static %}  # 템플릿 최상단 
+<link rel="stylesheet" type="text/css" href="{% static 'style.css' %}">
+
+<h1>{{ question.subject }}</h1>
+
+<link> 외부스타일을 적용할 때, 링크 가져옴
+
+rel => relation(현재페이지와의 관계) '가져오는 링크는 "stylesheet" 라고 알려줌
+
+type : "text용 css"
+
+href => hyper reference 는 static 디렉터리의 'style.css' 파일 
+
+
+2-08 부트스트랩(빠른 디자인 툴)
+
+트위터 개발하면서 만들어짐 / 오픈소스 프로젝트
+
+버전 5.3.2 버전 사용 함
+
+project\mysite\static\bootstrap.min.css
+
+부트스트랩 => 사이트 진입 => Docs => Getting started => Download
+
+
+[ templates\pybo\question_list.html ]
+
+{% load static %}
+<link rel="stylesheet" type="text/css" href="{% static 'bootstrap.min.css' %}">
+
+{% if question_list %}
+
+이전 질문 상세 템플릿 => styles.css
+질문 목록 템플릿 => 'bootstrap.min.css' 부트스트랩
+
+
+[ templates\pybo\question_list.html ]
+
+{% load static %}
+<link rel="stylesheet" type="type/css" href="{% static 'bootstrap.min.css' %}>
+
+<div class="container my-3">  # class에 "부트스트랩에 정의된 class 스타일" 적용
+	<table class="table">
+		<thead>          # <thead> : table head(구조)
+		<tr class="table-dark">  # <tr>: table row 1개
+			<th>번호</th>   # <th> : table head
+			<th>제목</th>
+			<th>작성일시</th>
+		</tr>
+		</thead>
+		<tbody>     # <today>: table body(구조)
+		{% if question_list %}    # question_list 있으면 
+		{% for question in question_list %}
+		<tr>
+			<td>{{ forloop.counter }}</td>   # <td>:table data, 번호 출력 / 현재순서
+			<td>
+				<a href="{% url 'pybo:detal' question.id %}">{{ question.subject }}</a>  # 링크 받아, 제목 출력
+
+			</td>
+			<td>{{ question.create_date }}</td>  # 질문 작성일시 출력
+		</tr>
+		{% endfor %}
+		{% else %}          # question_list가 없으면
+		<tr>
+			<td colspan="3">질문이 없습니다.</td>   # 열 3개 병합하여 '질문없습니다' 출력 / rowspan : 행병합
+		</tr>
+		{% endif %}
+		</tbody>
+	</table>
+</div>
+
+
+
+ㆍ 질문 상세 템플릿에도 부트스트랩 적용
+
+[ templates\pybo\question_detail.html ]
+
+(기존 코드 지우기)
+{% load static %}
+<link rel="stylesheet" type="text/css" href="{% static 'bootstrap.min.css' %}">
+
+<div class="container my-3">
+	#질문
+	<h2 class="border-bottom py-2">{{ question.subject }}</h2>
+	<div class="card my-3">
+		<div class="card-body">
+			<div class="card-text" style="white-space: pre-line;">{{ question.content }}</div>
+			<div class="d-flex justify-content-end">
+				<div class="badge bg-light text-dark p-2">
+					{{ question.create_date }}
+
+				</div>
+			</div>
+		</div>
+	</div>
+
+	# 답변
+
+	<h5 class="border-bottom my-3 py-2">{{question.answer_set.count}}개의 답변이 있습니다.</h5>
+	{% for answer in question.answer_set.all %}
+	<div class="card my-3">
+		<div class="card-body">
+			<div class="card-text" style="white-space:pre-line;">{{ answer.content }}</div>
+			<div class="d-flex justify-content-end">
+				<div class="badge bg-light text-dark p-2">
+					{{ answer.create_date }}
+				</div>
+			</div>
+		</div>
+	</div>
+	{% endfor %}
+
+	# 답변 등록
+
+	<form action="{% url 'pybo:answer_create' question.id %} method="post" class="my-3">
+		{% csrf_token %}
+		<div class="mb-3">
+			<label for="content" class="font-lable">답변내용</lable>
+			<textarea name="content" id="content" class="form-control" rows="10"></textarea>
+		</div>
+		<input type="submit" value="답변등록" class="btn btn-primary">
+	</form>
+</div>
+
+
+부트스트랩 클래스
+card, card-body, card-text => 부트스트랩 Card 컴포넌트
+badge => 부트스트랩 Badge 컴포넌트
+form-control, form-label => 부트스트랩 Form 컴포넌트
+border-bottom => 아래방향 테두리 선
+my-3 => 마진값 상하 3
+py-2 => 패딩값 상하 2
+p-2 => 패딩값 2
+d-flex justify-content-end => 컴포넌트의 우측 정렬
+bg-light => 배경 연회색
+text-dark => 글씨-검은색
+text-start => 좌측 정렬
+btn btn-primary => 부트스트랩 버튼 컴포넌트
+style="white-space: pre-line" => 줄 바꿈 정상적 표시
+
+
+2-09 표준 HTML 구조와 템플릿 상속
+
+<html>, <head> , <body> 엘리먼트가 있어야함
+CSS 파일 링크는 <head> 엘리먼트 안에 있어야함
+<head> 엘리먼트 안에는 <meta>, <title> 엘리먼트 등이 포함되어야함
+
+<table> ... </table>
+<table> => table 태그 / 태그 구간은 <table> 앨리먼트
+
+ㆍ템플릿 상속
+
+템플릿 파일들 표준HTML 구조로 변경 => <body> 엘리먼트 바깥 부분, 특히 <head> 부분이 같은 내용으로 중복
+=> CSS 파일 이름이 변경 or 새로운 CSS 파일 추가될 때 => 모든 템플릿 일일이 수정
+
+장고 => 템플릿 상속 기능 제공 => 기본 틀이 되는 템플릿 먼저 작성, 다른 템플릿에서 그 템플릿 상속해 사용하는 방법
+
+base.html(기본 템플릿)
+[ mysite/templates/base.html ]
+
+{% load static%}
+<!doctype html>
+<html lang="ko">
+<head>
+	# Required meta tags
+	<meta charset="utf-8">
+	<meta name="viewpoint" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	
+	# Bootstrap CSS
+	<link rel="stylesheet" type="text/css" href="{% static 'bootstrap.min.css' %}">
+	<title>Hello, pybo!</title>
+</head>
+<body>
+{% block content %}
+
+{% endblock %}
+</body>
+</html>
+
+
+<meta>태그 : 어떤 내용이 들어있는지 미리 알 수 있는 부분 / <head>  ~ </head> 사이에 입력되는 특수 태그 / 디자인에는 영향이 없으며 문서의 내용, 키워드, 어떤 사람이 제작했는지 알 수 있음
+
+base.html 템플릿 => 최상위 템플릿 / 표준 HTML 구조를 기본으로 사용하기 위해 만든 것 / 모든 템플릿이 상속받아야 함
+
+body 엘리먼트 안의 {% block content %} 와 {% endblock %} 템플릿 테그는 base.html 을 상속받을 각 템플릿에서 개별적으로 구현해야 하는 영역
+
+ㆍ question_list.html 수정(목록 템플릿 수정)
+=> 템플릿을 상속받기 위해서 extends  명령 필요 / base.html 템플릿을 상속받기 위해 각 템플릿 맨 위에 {% extends 'base.html' %} 코드를 작성해야 함, 어떤 주석과 코드도 못 옴
+/ 기존에 있던 두 줄은 base.html에 있으므로 삭제 / 
+
+[ templates/pybo/question_list.html ]
+
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container my-3">
+...
+</div>
+{% endblock %}
+
+ㆍ question_detail.html 수정(상세 템플릿 수정)
+
+[ templates/pybo/question_detail.html ]
+
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container my-3">
+	<h2 class="border-bottom py-2">{{ question.subject }}</h2>
+
+...
+	</form>
+</div>
+{% endblock %}
+
+
+브라우저 소스보기 기능 => 크롬 => 옵션 => 도구 더보기 => 개발자도구 or ctrl+shift+I or F12 => 생성된 HTML 확인
+
+
+ㆍ style.css
+
+부트스트랩 적용 => style.css 내용 필요 x => 기존 내용 삭제
+
+[ mysite\static\style.css ]
+
+
+2-10 폼(form) 기능 사용하기
+
+
+ㆍ 질문 등록
+
+ [ templates\pybo\question_list.html ]
+
+...
+	</table>
+	<a href="{% url 'pybo:question_create' %}" class="btn btn-primary">질문 등록하기</a>
+</div>
+{% endblock %}
+
+부트스트랩의 "btn btm-primary" 클래스 => 질문 등록하기 버튼 생성 / 연결되는 링크 => "{% url 'pybo:question_create' %}" / 버튼 클릭 =>  'pybo:question_create' 별명에 해당하는 URL 호출
+
+
+ㆍURL 매핑(URL 별명 만들기)
+[ mysite\pybo\urls.py ]
+
+urlpatterns = [
+	,
+	path('question/create/', views.question_create, name='question_create'),
+]
+
+
+ㆍ form 만들기
+
+폼 => 페이지 요청시 전달되는 파라미터들을 쉽게 관리하기 위해 사용하는 클래스 / 필수 파라미터의 값이 누락되지 않았는지, 파라미터의 형식은 적절한지 등을 검증할 목적으로 사용
+/ HTML 을 자동으로 생성 or 폼에 연결된 모델을 이용하여 데이터를 저장하는 기능
+
+[ mysite\pybo\forms.py ]
+
+from django import forms
+from pybo.models import Question
+
+class QuestionForm(forms.ModelForm):
+	class Meta:
+		model = Question # 사용할 모델
+		fields = [ 'subject', 'content' ] # QuestionForm 에서 사용할 Question 모델의 속성
+
+
+QuestionForm => forms 라이브러리에 있는 ModelForm 클래스 상속받음
+
+장고 폼 = 일반 폼 & 모델 폼 / 모델폼 => 모델과 연결하는 폼 / 폼을 저장하면 연결된 모델의 데이터를 저장 가능 / 이너 클래스인 Meta 클래스가 반드시 필요
+Meta 클래스 => 사용할 모델과 모델의 속성 적어야
+
+QuestionForm => Question 모델과 연결된 폼 / 속성으로 Question 모델의 subject와 content 를 사용한다고 정의 내림
+
+
+ㆍ 뷰 함수 만들기
+
+[ mysite\pybo\views.py ]
+...
+from .forms import QuestionForm
+
+...
+
+def question_create(request):
+	form = QuestionForm()
+	return render(request, 'pybo/question_form.html', {'form':form})
+
+question_create 함수는 위에 작성한 QuestionForm() 클래스를 form 으로 사용
+
+render 함수 => 'pybo~.html' 템플릿에 적용할 'form'은 {'form':form}를 통해 QuestionForm() 클래스를 전달 받을 것
+
+
+ㆍ 폼 템플릿 만들기
+
+[ mysite\templates\pybo\question_form.html ]
+
+{% extends 'base.html' %}  # base.html 가져오기
+{% block content %}   # 블록 시작
+<div class="container">
+	<h5 class="my-3 border-bottom pb-2">질문등록</h5>  # 페이지 상단에 제목 표시
+	<form method="post">   # action 속성의 url 생략
+		{% csrf_token %}  # 보안
+		{{ form.as_p }}   # QuestionForm 에 정의된 subject, content <p> 태그로 출력
+		<button type="submit" class="btn btn-primary">저장하기</button>  # [저장하기] 버튼 생성
+	</form>
+</div>
+{% endblock %} # 블록 끝
+
+
+{{ form.as_p }} 에서
+ form 은 views.question_create 에서 {'form':form} 코드에 의해 QuestionForm 클래스 전달 받음
+as_p => form 을 <p> 태그로 랜더해줌
+즉 {{ form.as_p }} => QuestionForm 에 정의된 subject, content 속성을 <p> 엘리멘트로 출력하여 HTML 코드를 생성
+
+
+form 태그에 action 속성을 생략하면 현재 페이지의 URL이 디폴트 URL 로 설정
+
+<form method="post"> == <form method="post" action="{% url 'pybo:question_create' %}">
+
+만약 action 값을 명시해 놓으면 question_form.html 템플릿은 "질문 등록" 에서만 사용 가능 => 비워둬
+
+
+
+ㆍ GET & POST
+
+[ mysite\pybo\views.py ]
+기존 코드 지우고
+...
+def question_create(request):
+	if request.method == 'POST':   # 요청이 POST 방식이면
+		form = QuestionForm(request.POST)
+		if form.is_vaild():   # 폼이 유효하다면
+			question = form.save(commit=False)  # 임시 저장하여 question 객체를 리턴 / form 으로 Question 모델 데이터를 저장 / 아직 데이터베이스에 저장 x / 바로 저장해버리면 create_date 값 설정되지 않아서 오류 발생
+			question.create_date = timezone.now()   # 실제 저장을 위해 작성일시를 설정
+			question.save()    # 데이터를 실제로 저장
+			return redirect('pybo:index')   # pybo:index로 이동함, 실주소는 .../pybo/
+	else:						# 요청이 GET 방식이면
+		form = QuestionForm()
+		context = {'form':form}
+		return render(request, 'pybo/question_form.html', context)
+
+create_date 속성은 데이터 저장 시점에 생성해야 하는 값이므로 QuestionForm 에 등록하여 사용하지 않음
+return redirect('pybo:index') 는 url 별명 pybo:index 로 이동시킴 (실주소= localhost:8000/pybo/)
+
+<if form 에 저장된 subject, content 의 값이 올바르지 않음>
+=> form 에는 오류 메시지가 저장되고 다시 질문 등록 화면을 렌더링 할 것
+=> 이 때 form 에는 오류 메시지가 저장되므로 화면에 오류를 표시할 수 있다
+
+<처리과정>
+① " 질문 목록 화면"에서 [질문 등록하기] 버튼을 클릭하면, 'pybo:question_create' URL 이 실행 되고
+[ question_list.html ]
+<a href="{% url 'pybo:question_create' %}" class="btn btn-primary">질문 등록하기</a>
+
+② /pybo/question/create 가 GET 방식으로 요청되어, 질문 등록 화면(views.question_create)이 나타난다 ( <a href="..."> 을 통해 페이지를 요청할 경우 무조건 GET 방식 사용됨)
+[ urls.py ]
+path('question/create/', views.question_create, name='question_create'),
+
+③ 이때, "질문 등록 화면"에서 값(데이터)을 입력하고 [저장하기] 버튼을 누르면, POST 방식으로 요청되어, 데이터가 화면에 저장된다.
+[ question_form.html ]
+<form method="post">
+
+
+
+GET & POST 비교
+
+GET 방식 => form = QuestionForm() / 인자 없이 form 생성
+POST 방식 => form = QuestionForm(request.POST) / request.POST를 인수로 사용하여 form 생성
+
+ request.POST로 QuestionForm 생성 시 => request.POST 에 담긴 subject, content 값(사용자가 입력한 값)이 => QuestionForm 의 subject, content 속성으로 자동으로 저장되어 객체(form)가 생성됨
+
+
+GET, POST 코드는 장고가 미리 정해 놓은 코드
+
+
+
+ㆍ 폼의 위젯(widget) 속성 사용하기
+
+화면을 부트스트랩으로 준비했지만 {{ form.as_p }} 태그는 HTML 코드를 자동으로 생성해서 부트스트랩을 적용 불가능
+
+질문 폼(QuestionForm) 에 위젯 추가하면 어느정도 해결
+
+[ mysite\pybo\forms.py ]
+
+class QuestionForm(forms.ModelForm):
+	class Meta:
+		...
+		widgets = {
+			'subject':forms.TextInput(attrs={'class':'form-control'}),
+			'content':forms.TextInput(attrs={'class':'form-control','rows':10}).
+}
+
+widgets 속성 지정하면 subject, content 입력 필드에  form-control 과 같은 부트스트랩 클래스 추가 가능
+
+form-control => 사용자 지정 스타일, 크기 조정, 포커싱 상태 등 사용 / <input> 및 <textarea> 과  같은 택스트 양식 컨트롤을 업그레이드할 때 사용
+
+=> subject 입력창 브라우저 만큼 폭 넒어짐 / content 텍스트 영역도 브라우저 만큼 폭 넓어짐 & 10 행 정도 높이 갖음
+
+
+ㆍ form의 레이블 속성 사용하기
+ 질문 등록의 화면에 표시되는 영문이 아니라 한글로 표시 => labels 속성 추가 
+
+[ mysite\pybo\forms.py ]
+
+	class Meta:
+		...
+		labels = {
+			'subject': '제목',
+			'content': '내용',
+}
+
+
+ㆍ 수동 폼 작성
+
+ {{ form.as_p }}  => HTML 코드가 자동으로 생성 => 디자인 측면 제한 / 웹 디자이너와 개발자 역할 분리 모호 
+
+[ pybo\forms.py ]
+
+수작업시 필요 없는 widget 속성 제거
+
+[ mysite\templates\pybo\question_form.html ]
+
+ 질문 등록 화면 템플릿(question_form.html) 에서 {{ form.as_p }} 삭제 
+
+	{% csrf_token %}
+
+		# 오류 표시 start
+
+		{% if form.errors %}  # question 함수에서 form.is_vaild()에 에러가 있다면
+		<div class="alert alert-danger" role="alert">  # 경고형식(분홍색 바탕에 글씨, 결과화면으로 확인)
+			{% for field in form %}    # 폼에서 필드를 하나씩 가져오기
+			{% if field.errors %}   # 필드에 에러가 있으면
+			<div>
+				<strong>{{ field.label }}</strong>   # 굵은 글씨로 해당필드 라벨 표시
+				{{ field.errors }}   # 장고 폼에서 정한 에러가 표시됨(한글로 번역되어 표시)
+			</div>
+			{% endif %}
+			{% endfor %}
+		</div>
+		{% endif %}
+
+		# 오류 표시 End
+
+		<div class="mb-3">
+			<label for="subject" class="form-label">제목</label>
+			<input type="text" class="form-control" name="subject" id="subject"
+				value="{{ form.subject.value|default_if_none:"}}">   # 오류가 발생하였을 때 기존에 입력했던 값을 유지해주기 위힘
+		</div>
+
+		<div class="mb-3">
+			<label for="content" class="form-label">내용</label>
+			<textarea class="form-control" name="content"
+					id="content" rows="10">{{ form.content.value|default_if_none:"}}</textarea>
+		</div>
+
+		<button type="submit" class="btn btn-primary">저장하기</button>
+	</form>
+</div>
+{% endblock %}
+
+{{ form.as_p }}로 자동으로 생성되는 HTML 대신, 제목과 내용에 해당되는 HTML 코드 직접 작성
+
+|default_if_none:" 는 폼 데이터(form.subject.value)에 값이 없을 경우 None 이라는 문자열이 표시되는데, None 대신 공백('')으로 필터되어 표시하라는 의미
+
+장고의 템플릿 필터 => 버티컬 바
+
+
+
+ㆍ 답변 등록
+
+[ mysite\pybo\forms.py ]
+
+from pybo.models import Question, Answer
+
+...
+
+class AnswerForm(forms.ModelForm):
+	class Meta:
+		model = Answer
+		fileds = ['content']
+		labels = {
+			'content':'답변내용',
+}
+
+
+[ mysite\pybo\views.py ]
+
+answer_create 함수 > get_objects_or_404 코드 하단에 > 이전 코드 삭제
+
+from .forms import QuestionForm, AnswerForm
+from django.http import HttpResponseNotAllowed
+
+..
+
+def answer_create(request, question_id):
+	...
+	pybo 답변등록
+	...
+	question = get_object_or_404(Question, pk=question_id)
+	if request.method == "POST":
+		form = AnswerForm(request.POST)
+		if form.is_valid():
+			answer = form.save(commit=False)
+			answer.create_date = timezone.now()
+			answer.save()
+			return redirect('pybo:detail', question_id=question.id)
+	else:
+		return HttpResponseNotAllowed('Only POST is possible')
+
+	context = {'question': question, 'form':form}
+	return render(request, 'pybo/question_detail.html', context)
+
+
+
+질문 상세 템플릿(questoin_detail.html)에 오류 표시 위한 영역 추가
+
+[ mysite\templates\pybo\question_detail.html ]
+
+
+		{%csrf_token %}
+		
+		# 오류 표시 시작
+		{% if form.errors %}
+		<div class="alert alert-danger" role="alert">
+			{% for field in form %}
+			{% if field.errors %}
+			<div>
+				<strong>{{ field.label }}</strong>
+				{{ field.errors }}
+			</div>
+			{% endif %}
+			{% endfor %}
+		</div>
+		{% endif %}
+		# 오류 표시 끝
+
+		<div class="mb-s">
+
+
+
+3-01 내비게이션바
+
+모든 화면 위쪽에 고정되어 있는 부트스트랩 컴포넌트
+
+
+네비게이션바는 모든 페이지에서 공통적으로 보여야 하므로
+tamplates/base.html 템플릿에 코드 추가
+!<body>태그 안쪽 맨 위에 작성해야함
+
+[ mysite\templates\base.html ]
+
+<body>
+
+# 내비게이션바
+<nav class="navbar navbar-expand-lg navbar-light bg-light border-bottom">
+	<div class="container-fluid">
+		<a class="navbar-brand" href="{% url 'pybo:index' %}">Pybo</a> # 'Pybo' 로고 배치
+		<button class="navbar-toggler" type="button"
+			data-bs-toggle="collapse"
+			data-bs-target="#navbarSupportedContent"
+			aria-controls="navbarSupportedContent"
+			aria-expanded="false"
+			aria-label="Toggle navigation">
+		  <span class="navbar-toggler-icon"></span>
+		</button>
+		<div class="collapse navbar-collapse" id="navbarSupportedContent">
+			<ul class="navbar-nav me-auto mb-2 mb-lg-0">
+				<li class="nav-item">
+					<a class="nav-link" href="#">로그인</a>
+				</li>
+			</ul>
+		</div>
+	</div>
+</nav>
+
+{% block content %}
+{% endblock %}
+
+</body>
+</html>
+
+내비게이션바의 'Pybo' 로고를 누르면 아무곳에서나 메인 페이지'pybo:index'로 돌아갈 수 있다.
+
+부트스트랩의 반응형 웹 기능 => 브라우저의 크기가 작아지면, 내비게이션 바에 있는 링크들을 작은 햄버거 메뉴 버튼으로 숨김
+
+
+부트스트랩 자바스크립트 파일(bootstrap.min.js)은 이미 다운로드 받은 bootstrap-5.1.3-dist.zip 압축파일에서 복사
+
+압축파일내 경로 : bootstrap-5.1.3-dist\js\bootstrap.min.js
+붙여 넣을 위치: project\mysite\static\bootstrap.min.js
+
+
+복붙 방법 => 압축 풀린 bootstrap-5.1.3-dist 폴더 > js 폴더 > bootstrap.min.js 복사 > 파이참 > static 디렉터리 우클릭 > Paste > [OK] 
+
+
+추가한 bootstrap.min.js 파일 사용하기 위해 => base.html의 </body> 태그가 끝나기 전 바로 위에 코드 추가
+
+[ mysite\templates\base.html ]
+
+{% endblock %}
+
+# 부트스트랩 JS 
+<script src="{% static 'bootstrap.min.js' %}"></script>
+</body>
+</html>
+
+
+ㆍ {% include %} 탬플릿 태그
+
+장고에는 탬플릿의 특정 위치에, 다른 탬플릿을 삽입할 수 있는 {% include %} 탬플릿 태그 존재
+{% include %} 탬플릿 태그 => 어떤 탬플릿에서 특정 탬플릿이 반복적으로 사용됭 경우 중복을 없애기 위해 사용
+
+
+{% include %} 를 이용하여, base.html 템플릿에 내비게이션바 템플릿(navbar.html) 넣기
+
+[ mysite\templates\navbar.html ]
+
+
+# 내비게이션바
+<nav class="navbar navbar-expand-lg navbar-light bg-light border-bottom">
+	<div class="container-fluid">
+		<a class="navbar-brand" href="{% url 'pybo:index' %}">Pybo</a> # 'Pybo' 로고 배치
+		<button class="navbar-toggler" type="button"
+			data-bs-toggle="collapse"
+			data-bs-target="#navbarSupportedContent"
+			aria-controls="navbarSupportedContent"
+			aria-expanded="false"
+			aria-label="Toggle navigation">
+		  <span class="navbar-toggler-icon"></span>
+		</button>
+		<div class="collapse navbar-collapse" id="navbarSupportedContent">
+			<ul class="navbar-nav me-auto mb-2 mb-lg-0">
+				<li class="nav-item">
+					<a class="nav-link" href="#">로그인</a>
+				</li>
+			</ul>
+		</div>
+	</div>
+</nav>
+
+
+base.html의 기존 내비게이션바 코드 삭제 & 수정
+
+[ mysite\templates\base.html ]
+
+<body>
+# 내비게이션바
+
+{% include "navbar.html %}
+
+...
+
+navbar.html 파일 => 다른 템플릿들에서 중복되어 사용되진 않음 but 독립된 하나의 템플릿으로 관리하는 것이 유지보수에 유리
+
+
+3-02 페이징
+
+ㆍ 대량 테스트 데이터 만들기
+=> 장고 셸 이용하기
+
+(mysite) python manage.py shell
+
+>>>from pybo.models import Question
+>>>from django.utils import timezone
+
+>>> for i in range(300):
+	   q = Question(subject="테스트 데이터입니다:[%03d]" %i, content='내용무',
+create_date=time.zone.now())
+	   q.save()
+	# Enter 한번 더
+>>>
+
+quit()
+
+ㆍ Paginator로 목록 페이지 만들기 
+페이징 위해 사용하는 클래스
+
+[ mysite\pybo\views.py ]
+
+...
+from django.core.paginator import Paginator
+
+def index(request):
+	...
+	pybo 목록 출력
+	...
+	# 입력 인자
+	page = request.GET.get('page','1')   #  GET 방식으로 호출된 URL에서 page 값을 가져옴 1 페이지 가져와서 페이지(page) 객체 만듬
+
+
+	# 조회
+	question_list = Question.objects.order_by('-create_date')
+
+	#페이징 처리
+	paginator = Paginator(question_list, 10)   # 전체 question_list 를 10개씩 묶어서 각 페이지로 만들기
+	page_obj = paginator.get_page(page) 
+
+	context = {'question_list':page_obj}   # question_list는 페이징 객체(page_obj)
+	return render(request, 'pybo/question_list.html', context)  #  질문목록템플릿(pybo/question_list.html)에 전달된 페이징객체(page_obj)는 question_list
+
+
+Paginator 클래스 => 페이지당 보여줄 개수 정할 때 사용하는 클래스 /  question_list(전체목록)를 페이징 객체(paginator, 페이지로 분리된 객체)로 변환 시켜 줌
+
+장고에 표준으로 준비되어 있는 페이지네이션 기능을 사용하기 위해서는 위와 같이 Paginator 오브젝트를 생성해야함
+
+상속 받은 Paginator 클래스는 get_page(페이지번호)함수 or page(페이지번호) 함수 사용 / 해당 페이지의 리스트 획득할 수 있음
+
+
+
+Paginator 클래스 이용하여 페이지 오브젝트(page_obj) 만들어 놓음 => 페이징 객체(page_obj)는 다음과 같은 속성들 사용 가능
+
+paginator.count => 전체 게시물 개수
+paginator.per_page => 페이지당 보여줄 게시물 개수
+paginator.page_range => 페이지 범위
+number => 현재 페이지 번호
+previous_page_number => 이전 페이지 번호
+next_page_number => 다음 페이지 번호
+has_previous => 이전 페이지 유뮤
+has_next => 다음 페이지 유무
+start_index => 현재 페이지 시작 인덱스(1부터 시작)
+end_index => 현재 페이지의 끝 인덱스(1부터 시작)
+
+
+ㆍ 페이징 만들기
+
+[ mysite\templates\pybo\question_list.html ]
+
+	</table>
+	# 페이징 처리 시작
+	<ul class="pagination justify-content-center">
+	
+		#이전 페이지
+		{% if question_list.has_previous %}   # 이전 페이지가 있다면
+		<li class="page-item">
+			<a class="page-link' href="?page={{ question_list.previous_page_number }}">이전</a>  # 이전 페이지 번호로 링크를 만들어, [이전] 버튼의 링크 활성화
+		</li>
+		{% else %}    # 이전 페이지가 없다면
+		<li class="page-item disabled">
+			<a class="page-link" tabindex="-1" aria-disabled="true" href="#">이전</a> # 포거스 제거(-1), 현재상태 비활성화(true), 링크 비활성화
+		</li>
+		{% endif %}
+
+		#페이지리스트
+		{% for page_number in question_list.paginator.page_range %}  # 페이지 리스트 루프, 페이지 범위에서 한 개씩 가져옴
+
+		{% if page_number == question_list.number %}  # 페이지 리스트의 번호와 현재 페이지(number)와 같으면
+
+		<li class="page-item active" aria-current="page">           # active 클래스 적용하여 강조표시
+			<a class="page-link" href="?page={{ page_number }}">{{ page_number }}</a>      # 페이지 번호로 링크를 만들어, [페이지 번호]의 링크 활성화
+
+		</li>
+		{% else %}  # 페이지 리스트의 번호와 현재 페이지(number)와 다르면
+		<li class="page-item">   # active 클래스 없음, 강조표시 없음
+			<a class="page-link" href="?page={{ page_number }}">{{ page_number }}</a>   # 강조가 없을 뿐, [페이지 번호]의 링크는 활성화
+		</li>
+		{% endif %}
+		{% endfor %}
+
+		# 다음 페이지
+		{% if question_list.has_next %}   # 다음 페이지가 있으면
+		<li class="page-item">
+			<a class="page-link" href="?page={{ question_list.next_page_number }}">다음</a>
+		</li>
+		{% else %}    # 다음 페이지가 없으면 
+		<li class="page-item disabled">
+			<a class="page-link" tabindex="-1" aria-disabled="true" href="#">다음</a>
+		</li>
+		{% endif %}
+	</ul>
+	# 페이징처리 끝
+	<a href="{% url 'pybo:question_create' %}" class="btn btn-primary">질문 등록하기</a>
+</div>
+{% endblock %}
+
+
+부트스트랩의 pagination 컴포넌트 의 pagination, page-item, page-link 클래스 사용
+
+
+페이징 기능 => 코드
+이전 페이지가 있는지 체크 => {% if question_list.has_previous %}
+이전 페이지 번호 => {{ question_list.previous_page_number }}
+다음 페이지가 있는지 체크 => {% if question_list.has_next %}
+다음 페이지 번호 => {{ question_list.next_page_number }}
+페이지 리스트 루프 => {% for page_number in question_list.paginator.page_range %}
+현재 페이지와 같은지 체크 => {% if page_number == question_list.number %}
+
+ㆍ 페이지 리스트
+
+페이지 표시에 제한 
+
+[ mysite\templates\pybo\question_list.html ] 
+
+# 페이지리스트 
+
+{% for page_number in question_list.paginator.page_range %}
+{% if page_number >= question_list.number|add:-5 and page_number <= question_list.number|add:5 %}  
+{% if page_number == question_list.number %}
+
+
+{% endif %}
+{% endif %}
+{% endfor %}
+
+
+|add:-5 템플릿 필터 / 페이지 리스트를 현재 페이지(number) 기준으로 -5 ~ 5까지만 보이도록 만든 것
+
+
+
+
+3-03 템플릿 필터 
+
+템플릿 필터란 템플릿 태그에서 "|" 기호를 이용하는 필터 
+ex) {{ form.subject.value|default_if_none:" }}
+
+
+ㆍ 게시물 번호 오류
+
+모든 페이지에서 목록 번호가 항상 1부터 시작되는 오류
+
+ㆍ 게시물 번호
+
+번호 = 전체건수 - 시작인덱스 - 현재인덱스 + 1
+
+시작인덱스 => 페이지당 시작되는 게시물의 인덱스 
+
+현재인덱스 => '현재 페이지에 보여지는 게시물의 인덱스'로 위에서 부터(0부터) 1씩 증가되는 인덱스 
+
+장고에는 뺴기 필터 없음
+
+|add 필터의 인수는 숫자만 가능하며, 변수 사용은 불가능
+
+
+
+ㆍ 애너테이션(@)으로 템플릿 필터 만들기(sub 필터)
+
+템플릿 필터를 작성하기 전에 템플릿 필터 파일을 모아둘 templatetags 디렉터리 필요
+templatestags 디렉터리는 반드시 앱(pybo) 디렉터리 하위(project\mysite\pybo)에 생성해야함
+(mysite 디렉터리 아래에 만들면 안됨)
+
+
+[ mysite\pybo\templatetags\pybo_filter.py ]
+
+from django import template 
+
+register = template.Library() # template 모듈의 Library 클래스로 register 만듬
+
+
+@register.filter   # register(극히 소량의 데이터나 처리중인 중간 결과를 일시적으로 저장하는 고속 기억장치) 같은 애너테이션 만들기. filter 속성을 가진 
+def sub(value, arg):
+	return value-arg
+
+
+
+애너테이션(@)은 프로그램의 소스코드 안에 다른 프로그램을 위한 정보를 미리 약속된 형식으로 포함시킨 것 / 애너테이션은 주석처럼 프로그래밍 언어에 영향을 미치지 않으면서 다른 프로그램에게 유용한 정보를 제공할 수 있는 장점
+
+템플릿 필터 함수 만드는 법
+=> sub() 함수 정의 만들기 > 그 위에 @register.filter 애너테이션 적용 > 템플릿에서 sub() 함수를 필터로 사용 가능
+
+sub() => 기존 값 value - 입력으로 받은 값 arg = 리턴
+
+
+ㆍ 템플릿 필터 사용
+
+sub 필터 사용 위해 => 템플릿 상단에 {% load pybo_filter %} 작성 => sub 필터 있는 pybo_filter.py 먼저 로드
+(템플릿 상단에 {% extends ...} 문이 있을 경우 {% load ..} 문은 {% extends ...} 문 아래에 위치함)
+
+기존 forloop.counter 부분 지우고, 
+
+[ mysite\templates\pybo\question_list.html ] 
+
+{% extends 'base.html' %}
+{% load pybo_filter %}  # sub 필터 로드
+
+...
+
+
+
+
+		<tr>
+			<td>
+				{{ question_list.paginator.count|sub:question_list.start_index|sub:forloop.counter0|add:1 }}
+
+			</td>
+			<td>
+				<a href="{% url 'pybo:detail' question.id %}">{{ question.subject }}</a>
+			</td>
+			<td>{{ question.create_date }}</td>
+		</tr>
+			...
+
+		</tbody>
+
+공식 => 코드
+전체건수 => question_list.paginator.count
+시작인덱스 => quesiton_list.start_index
+현재인덱스 => forloop.counter0
+
+
+
+ 

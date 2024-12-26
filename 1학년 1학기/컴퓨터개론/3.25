@@ -1,0 +1,22 @@
+def find_max( A ):
+    max = A[0]
+    for i in range(len(A)) :
+        if A[i] > max :
+            max = A[i]
+            
+    return max
+
+# array =  [20, 34, 12, 93, 84, 39, 64, 55, 24 ]
+# print(array, "최댓값=", find_max(array))
+
+def gcd(a,b):
+    print("gcd" , (a,b))
+    while b != 0:
+        r = a % b
+        a = b
+        b = r
+        print("gcd", (a,b))
+        
+    return a
+
+print("60과 28의 최대 공약수 =", gcd(60,28))

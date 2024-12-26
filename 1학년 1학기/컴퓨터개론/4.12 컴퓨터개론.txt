@@ -1,0 +1,59 @@
+4.12 컴퓨터개론
+리눅스, sql
+
+명령어 기반 
+
+삽입 삭제 업데이트 활용실습
+
+
+
+
+#include <stdio.h>
+
+int main(void) {
+
+    printf("Hello World\n");
+
+    return 0;
+}
+//////////////////////////////////////
+
+#include <stdio.h>
+
+int main(void) {
+
+    float f = 46.5f;
+    printf("%.2f\n",f);//소수점 이하 셋째 자리에서 반올림림
+    double d = 4.428;
+    printf("%.2lf\n",d);// 소수점 이하 셋째 자리에서 반올림림
+
+    return 0;
+}
+
+
+
+기능에 따른 연산자의 분류 => 중요!!!!!! ( sizeof 연산자)
+
+
+
+// Online C compiler to run C program online
+#include <stdio.h>
+
+int main(void) {
+
+    int a = 10;
+    printf("a는 %d\n",a);
+    //a = a+1;
+    a++;
+    printf("a는 %d\n",a);
+    a++''
+    printf("a는 %d\n",a);
+    int b = 20;
+    printf("b는 %d\n", ++b);
+    printf("b는 %d\n",b++);
+    printf("b는 %d\n",b);
+
+    return 0;
+}
+
+

@@ -1,0 +1,5 @@
+import mylib
+print("내 학번은", mylib.mySID, "이고, 이름은",
+      mylib.myName, "이야.")
+for n in range(0,10):
+    print(mylib.myFunc(n))

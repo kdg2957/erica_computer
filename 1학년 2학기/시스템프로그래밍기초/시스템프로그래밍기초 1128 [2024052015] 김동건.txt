@@ -1,0 +1,215 @@
+
+#include <stdlib.h>
+
+//==============11-9 ============
+
+
+//int main()
+//{
+//   int row = 2, col = 3;
+//   int** p = (int**)malloc( 2*sizeof(int*));
+//
+//   if (p == NULL)
+//      return 0;
+//
+//   for (int i = 0; i < row; i++) // 2차원 배열 구조 만들기
+//   {
+//      p[i] = (int*)malloc(col * sizeof(int));
+//      if (p[i] == NULL)
+//         return 0;
+//   }
+//
+//   for (int i = 0; i < row; i++)
+//      for (int j = 0; j < col; j++)
+//         p[i][j] = i + j;
+//
+//   for (int i = 0; i < row; i++)
+//   {
+//      for (int j = 0; j < col; j++)
+//         printf("%d \t", p[i][j]);
+//      printf("\n");
+//   }
+//
+//   for (int i = 0; i < row; i++)
+//      free(p[i]);
+//
+//   free(p);
+//   p = NULL;
+//
+//
+//   return 1;
+//}
+
+
+
+//====================12 ===============
+
+//int main() {
+//
+//	char* str = "Hello";
+//	
+//	char str1[10] = "Hello";
+//	char* p = "%s";
+//
+//	printf(p , str1);
+//
+//	printf("%s", str1);
+//
+//	/*printf("%c \n", str[0]);
+//	printf("%c \n", str[1]);
+//	printf("%p \n", "Hello");
+//	printf("%p \n", str);
+//	printf("%s \n", str);*/
+//
+//
+//
+//	return 0;
+//}
+
+//=================
+
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+//int main()
+//{
+//   char str[20];
+//
+//   printf("Enter a string \n");
+//   scanf("%s", str);
+//
+//   printf("%s \n", str);
+//
+//   return 1;
+//}
+
+
+
+#include <string.h>
+//============Ex 12 - 2================
+
+//int main() {
+//
+//	char* str1 = "Okay Buddy"; // 주소값만 가짐
+//	char str2[15] = "Bless you.";  // 11개의 문자를 가짐
+//
+//	printf("%d \n", strlen(str1)); // null 문자 빼고 개수 알려줌  10
+//	printf("%d \n", strlen(str2)); // null 문자 빼고 개수 알려줌  10
+//	printf("%d \n", sizeof(str1)); // 변수의 크기  8
+//	printf("%d \n", sizeof(str2)); // 배열의 크기  15
+//
+//	return 0;
+//}
+
+
+// ============ ex 12 - 5 ========
+
+//int main() {
+//
+//	char ch, str[15];
+//	int i;
+//	printf("Enter a sentecne to reverse \n");
+//
+//	for (i = 0; (ch = getchar()) != '\n'; i++)
+//		str[i] = ch;
+//	str[i] = '\0';
+//
+//	for (--i; i >= 0; i--)
+//		putchar(str[i]);
+//
+//	return 0;
+//}
+
+//=================
+#include <string.h>
+#include <stdlib.h>
+//int main() {
+//
+//	/*char str[10];
+//	printf("Enter a string. \n");
+//	gets(str);
+//	puts(str);*/
+//
+//	char* dest = "Water Melon";
+//	char* src = "apple";
+//
+//	dest = (char*)malloc(sizeof(char) * (strlen(src) + 1));
+//
+//	strcpy(dest, src);
+//
+//	printf("%s \n", dest);
+//	
+//
+//	return 1;
+//
+//}
+
+//=================
+
+#include <string.h>
+//int main() {
+//
+//	//int x = strcmp("apple", "zoo");
+//	printf("%d \n", strcmp("apple", "zoo"));
+//	printf("%d \n", strcmp("zoo", "zoo"));
+//	printf("%d \n", strcmp("zzz", "zoo"));
+//
+//	char str1[10] = "apple";
+//	char str2[10] = "pear";
+//	str1 == str2; // 주소값 비교
+//
+//	return 1;
+//}
+
+//================12 - 14==============
+
+//int my_strlen( const char* str) 
+//{
+//	int i;
+//	for (i = 0; str[i] != '\0'; i++)       ;
+//	return i;
+//}
+//
+//int main() {
+//
+//	char text[30];
+//	printf("Enter a text \n");
+//	gets(text);
+//
+//
+//	printf("%d \n", my_strlen(text));
+//
+//
+//	return 1;
+//}
+
+// ======== 12 - 16===============
+
+char* my_strcpy(char* dest, const char* src) {
+
+	int i = 0;
+	
+	while ((dest[i] = src[i]) != '\0')
+		i++;
+
+	return  dest;
+}
+
+
+int main() {
+
+	char dest[30], src[30];
+
+	printf("Get a string \n");
+	gets(dest);
+
+	printf("Get a string \n");
+	gets(src);
+
+
+	my_strcpy(dest, src);
+	puts(dest);
+
+
+	
+	return 0;
+}

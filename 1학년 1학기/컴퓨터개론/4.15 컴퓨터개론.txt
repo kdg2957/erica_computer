@@ -1,0 +1,141 @@
+4.15 컴퓨터개론
+
+저번시간 ( 연산자, 변수, 데이터타입, 연산 수식 )
+
+비쥬얼 스튜디오 커뮤니티 
+
+
+
+
+do
+	문장
+while(조건)
+
+=> 무조건 문장 한 번은 함
+
+=> 적어도 한번은 반복문장은 함
+
+
+
+
+int main(void) {
+
+    for(int i = 1; i <= 10; i++)
+    {
+            printf("Hello World %d\n",i);
+    }
+    
+    return 0;
+}
+
+
+
+void 는 함수에서 다룸(우린 반복문까지 다루니까 알 필요 없음x)
+
+#include <stdio.h>
+
+int main(void) {
+
+    int i = 1;
+    while( i <= 10)
+    
+    {
+        printf("Hello Wrold %d\n",i); 
+        i++;
+    }
+    
+    return 0;
+}
+
+
+
+
+#include <stdio.h>
+
+int main(void) {
+
+    int i = 1;
+    do{
+        printf("hello World %d\n",i++);
+    
+    }while( i <= 10);
+    
+    return 0;
+}
+
+
+
+
+
+#include <stdio.h>
+
+int main(void) {
+
+    for (int i = 1; i <= 3; i++)
+    {
+        printf("첫 반복문 : %d\n",i);
+        for(int j =1 ; j <= 5; j++)
+        {
+            printf("   두번째 반복문: %d\n",j);
+        }
+    }
+    
+    return 0;
+}
+
+
+
+
+
+
+#include <stdio.h>
+
+int main(void) {
+
+    for (int i = 2; i <= 9; i++)
+    {
+        printf("%d단 출력\n",i);
+        for(int j =1 ; j <= 9; j++)
+        {
+            printf("%d x %d = %d\n",i,j,i*j);
+        }
+    }
+    
+    return 0;
+}
+
+
+
+
+
+
+#include <stdio.h>
+
+int main(void) {
+
+
+    int floor;
+    printf("몇 층을 쌓겠습니까?(5~100) ");
+    scanf("%d", &floor);
+    
+    
+    for (int i = 0; i < floor ; i++)
+    {
+        printf("");
+        for(int k =0 ; k < i*2 + 1; k++)
+        {
+            printf("*");
+        }
+        printf("\n");
+    }
+    
+    return 0;
+}
+
+
+
+for는 초기식과 증감식이 들어가있음
+while은 초기식이 위에 있고 조건식이 있고 증감식은 따로 다른 곳에 있든지 소괄호로 같이 하든지
+
+
+
